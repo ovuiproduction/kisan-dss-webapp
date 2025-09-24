@@ -34,7 +34,7 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.error("Database connection error:", err));
 
 app.get("/", (req, res) => {
-    res.send("This is server");
+    res.send("This is the backend server for Kisan-DSS application. Manages farmers, users, and crops efficiently!");
 });
 
 // Farmer Signup
