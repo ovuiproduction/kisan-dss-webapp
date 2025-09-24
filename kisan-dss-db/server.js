@@ -822,72 +822,6 @@ const translateText = async (text, targetLang) => {
   }
 };
 
-// ✅ Function to handle AI Chatbot logic
-// async function runChat(userInput) {
-//   try {
-//     const genAI = new GoogleGenerativeAI(API_KEY);
-//     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
-//     const generationConfig = {
-//       temperature: 0.9,
-//       topK: 1,
-//       topP: 1,
-//       maxOutputTokens: 1000,
-//     };
-
-//     const safetySettings = [
-//       {
-//         category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-//         threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-//       },
-//     ];
-
-//     const chat = model.startChat({
-//       generationConfig,
-//       safetySettings,
-//       history: [
-//         {
-//           role: "user",
-//           parts: [{ 
-//             text: `
-//             You are AgriBot, an advanced agriculture assistant specializing in market intelligence, crop insights, and direct market access for farmers. Your primary role is to assist farmers in Maharashtra with real-time market trends, crop pricing, and agricultural insights. Only provide information related to agriculture, specifically:
-
-//             1 *Market Trends & Pricing*  
-//                - Provide real-time APMC market prices for different crops.  
-//                - Refer to Agmarknet (https://agmarknet.gov.in/) for the latest market rates.  
-//                - Recommend the most profitable markets for selling a specific crop based on demand and price fluctuations.  
-
-//             2️ *Most Consumed Crops & Regional Insights*  
-//                - Answer queries on top crops grown and consumed in a given district or state.  
-//                - Suggest crops that are highly profitable based on regional demand.  
-
-//             3️ *Direct Market Access & Smart Selling*  
-//                - Guide farmers on where they can sell their crops for maximum profit.  
-//                - Analyze transportation costs to suggest the best market options.  
-
-//             4️ *Crop-Specific Advisory*  
-//                - Provide best practices for growing and selling crops.  
-//                - Give harvest recommendations based on soil and climate conditions.  
-
-//             By default, focus only on Maharashtra unless another state is specified.  
-//             Politely refuse unrelated queries.
-//             `
-//           }],
-//         },
-//         {
-//           role: "model",
-//           parts: [{ text: "Hello! I'm AgriBot, your agriculture assistant. How can I help you today?" }],
-//         },
-//       ],
-//     });
-
-//     const result = await chat.sendMessage(userInput);
-//     return result.response.text();
-//   } catch (error) {
-//     console.error("Error in AI chatbot:", error);
-//     return "Sorry, I couldn't process your request.";
-//   }
-// }
 
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 
@@ -1000,5 +934,5 @@ app.post("/chat", async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Server running on ${port}`);
+    console.log(`This is the backend server for Kisan-DSS application. Manages farmers, users, and crops efficiently!`);
 })
