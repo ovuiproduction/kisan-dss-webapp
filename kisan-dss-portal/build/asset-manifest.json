@@ -1,0 +1,42 @@
+{
+  "files": {
+    "main.css": "/static/css/main.05de0388.css",
+    "main.js": "/static/js/main.70dbfbe1.js",
+    "static/media/Masoor.jpg": "/static/media/Masoor.ee729292bc3bce6bbaeb.jpg",
+    "static/media/Moong.jpg": "/static/media/Moong.4fb85dc7d267ea59f66c.jpg",
+    "static/media/Smart_Decision_Building.mp4": "/static/media/Smart_Decision_Building.4a3c138ce15e427326e1.mp4",
+    "static/media/User_How_to_Buy_crops.mp4": "/static/media/User_How_to_Buy_crops.20c7f08d8830d702994c.mp4",
+    "static/media/Local_Markets.mp4": "/static/media/Local_Markets.dff80090e654aed55676.mp4",
+    "static/media/Post_Crop.mp4": "/static/media/Post_Crop.0bfe1149241fea031372.mp4",
+    "static/media/Gov_APMC.mp4": "/static/media/Gov_APMC.61bdf5088593646e7645.mp4",
+    "static/media/Crop_Rec.mp4": "/static/media/Crop_Rec.2257b0fc6339846a52a9.mp4",
+    "static/media/Gov_Sch.mp4": "/static/media/Gov_Sch.5091573bf12c707ea494.mp4",
+    "static/media/Wheat.jpg": "/static/media/Wheat.1b24efa935bb05367b62.jpg",
+    "static/media/Jowar.jpg": "/static/media/Jowar.695351cdefc3ccb76897.jpg",
+    "static/media/fa-solid-900.ttf": "/static/media/fa-solid-900.2582b0e4bcf85eceead0.ttf",
+    "static/media/Soyabean.jpg": "/static/media/Soyabean.4a93a40176ed65eb660a.jpg",
+    "static/media/fa-brands-400.ttf": "/static/media/fa-brands-400.1815e00441357e01619e.ttf",
+    "static/media/fa-solid-900.woff2": "/static/media/fa-solid-900.2463b90d9a316e4e5294.woff2",
+    "static/media/Tur.jpg": "/static/media/Tur.09bfa90f422ad9f91acd.jpg",
+    "static/media/Groundnut.jpg": "/static/media/Groundnut.3468a1af0d90dc866f01.jpg",
+    "static/media/fa-brands-400.woff2": "/static/media/fa-brands-400.c210719e60948b211a12.woff2",
+    "static/media/Gram.jpg": "/static/media/Gram.bb7d89abd46ae2338b7a.jpg",
+    "static/media/Cotton.jpg": "/static/media/Cotton.1dcff9a200780a3bd89c.jpg",
+    "static/media/fa-regular-400.ttf": "/static/media/fa-regular-400.914997e1bdfc990d0897.ttf",
+    "static/media/Bajra.jpg": "/static/media/Bajra.3b0f5178dd1c0d40bb80.jpg",
+    "static/media/Urad.jpg": "/static/media/Urad.05eee272de5fcfc2f81f.jpg",
+    "static/media/Barley.jpg": "/static/media/Barley.e6d4810710972766f807.jpg",
+    "static/media/Sugarcane.jpg": "/static/media/Sugarcane.aa8122e69d3b81520de6.jpg",
+    "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.89999bdf5d835c012025.woff2",
+    "static/media/Maize.jpg": "/static/media/Maize.37fdcbe2a5219e7f75d8.jpg",
+    "static/media/fa-v4compatibility.ttf": "/static/media/fa-v4compatibility.da94ef451f4969af06e6.ttf",
+    "static/media/fa-v4compatibility.woff2": "/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
+    "index.html": "/index.html",
+    "main.05de0388.css.map": "/static/css/main.05de0388.css.map",
+    "main.70dbfbe1.js.map": "/static/js/main.70dbfbe1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.05de0388.css",
+    "static/js/main.70dbfbe1.js"
+  ]
+}
