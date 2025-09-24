@@ -4,6 +4,10 @@ import { jwtDecode } from "jwt-decode";
 import '@fortawesome/fontawesome-free/css/all.css';
 import "../css/ActiveCrops.css";
 
+
+import { fetchActiveCrops_api } from "./apis_db";
+import { deleteCrop_api  } from "./apis_db";
+
 const ActiveCrops = () => {
   const [email, setEmail] = useState("");
   const [activeCrops, setActiveCrops] = useState([]);
@@ -32,20 +36,9 @@ const ActiveCrops = () => {
     }
   }, [email]); // Runs only when email is updated
 
-  const fetchCrops = async (userEmail) => {
+  const fetchCrops = async (email) => {
     try {
-      console.log("Fetching crops for email:", userEmail);
-      const response = await fetch(`http://localhost:4000/active-crops?email=${encodeURIComponent(userEmail)}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch crops");
-      }
-
-      const data = await response.json();
-      console.log("Fetched Crops:", data);
+      const data = await fetchActiveCrops_api(email);
       setActiveCrops(data);
     } catch (error) {
       console.error("Error fetching active crops:", error);
@@ -54,15 +47,10 @@ const ActiveCrops = () => {
 
   const deleteCrop = async (cropId) => {
     try {
-      console.log("Deleting crop with ID:", cropId);
-      const response = await fetch(`http://localhost:4000/delete-crop/${cropId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
+      const success = await deleteCrop_api(cropId);
+      if (!success) {
         throw new Error("Failed to delete crop");
       }
-
       // Remove deleted crop from UI
       setActiveCrops((prevCrops) => prevCrops.filter((crop) => crop._id !== cropId));
       console.log("Crop deleted successfully");

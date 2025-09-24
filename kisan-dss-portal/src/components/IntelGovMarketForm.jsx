@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../static/css/intel_gov_market_form.css";
+import { intelDecisionBuilding_api } from "./apis_ml";
 
 export default function IntelGovMarketForm({setGovMarketForm}) {
   const [commodity, setCommodity] = useState("");
@@ -27,11 +28,8 @@ export default function IntelGovMarketForm({setGovMarketForm}) {
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:5000/intel-wpi-price", formData, {
-        headers: { "Content-Type": "application/json" },
-      });
-      const responseData = response.data;
-      navigate("/intel-gov-market-price", { state: responseData });
+      const data = await intelDecisionBuilding_api(formData);
+      navigate("/intel-gov-market-price", { state: data });
       setSuccess("Data submitted successfully!");
     } catch (err) {
       setError("Failed to send data. Please try again.");

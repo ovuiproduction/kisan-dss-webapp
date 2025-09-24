@@ -1,0 +1,113 @@
+import axios from "axios";
+const API_BASE_URL = "http://localhost:5000";
+
+export const intelDecisionBuilding_api = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/intel-build-decision`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to get decision");
+    }
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in intelDecisionBuilding:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const cropRecommendation_api = async (formData) => {
+  try {
+    const response = await axios.post(  
+      `${API_BASE_URL}/intel-crop-recommendation`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );  
+    if (!response.ok) {
+      throw new Error("Failed to get recommendation");
+    }
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in cropRecommendation:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const intelWPIPrice_api = async (formData) => {
+  try {
+    const response = await axios.post(  
+      `${API_BASE_URL}/intel-wpi-price`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to get WPI price");
+    }
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in intelWPIPrice:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const IntelGovScheme_api = async (formData) => {
+  try {
+    const response = await axios.post(  
+      `${API_BASE_URL}/intel-gov-scheme`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },  
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to get government schemes");
+    }
+    const data = response.data;
+    return data;
+  }
+  catch (error) {
+    console.error("Error in IntelGovScheme:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const intelMarketPrice_api = async (formData) => {
+  try {
+    const response = await axios.post(  
+      `${API_BASE_URL}/intel-market-price`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to get market price");
+    }
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in intelMarketPrice:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};

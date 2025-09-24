@@ -2,6 +2,8 @@ import React, { useState,useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/auth.css";
 
+import { signup_farmer_api } from "./apis_db";
+
 export default function SignupFarmer({setIsLogin}) {
  
   const [name, setName] = useState("");
@@ -19,17 +21,10 @@ export default function SignupFarmer({setIsLogin}) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:4000/signup-farmer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, state, district, phone, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Signup failed");
-      }
+      const userData = { name, email, state, district, phone, password };
+      const response = await signup_farmer_api(userData, "farmer");
+      console.log("Signup successful:", response);
+      // Optionally, you can log the user in directly after signup
       setIsLogin(true);
     } catch (err) {
       setError(err.message);
@@ -105,17 +100,7 @@ export default function SignupFarmer({setIsLogin}) {
               />
             </div>
           </div>
-          {/* <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div> */}
+         
 
           <button type="submit">Sign Up</button>
         </form>

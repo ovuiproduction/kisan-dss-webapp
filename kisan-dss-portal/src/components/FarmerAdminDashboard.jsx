@@ -19,12 +19,6 @@ import TransactionHistory from './TransactionHistory';
 
 const FarmerAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
-
-  const [farmDetails] = useState({
-    name: "Green Valley Farms",
-    location: "Punjab, India",
-    crops: ["Wheat", "Rice", "Corn"]
-  });
  
   return (
     <>

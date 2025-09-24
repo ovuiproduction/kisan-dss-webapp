@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../static/css/intel-crop-rec.css";
+import { cropRecommendation_api } from "./apis_ml";
 
 export default function IntelCropRec() {
   const [input, setInput] = useState(""); 
@@ -55,19 +56,7 @@ export default function IntelCropRec() {
     };
 
     try {
-      // Send the data to the server
-      const response = await axios.post(
-        "http://localhost:5000/intel-crop-recommendation",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Response from server:", response.data);
-      const data = response.data;
-      console.log(data)
+      const data = await cropRecommendation_api(formData);
       setLoading(false);
       navigate('/intel-crop-rec-result',{state:data})
       // Handle the response from the server if necessary

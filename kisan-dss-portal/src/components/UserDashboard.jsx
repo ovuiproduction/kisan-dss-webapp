@@ -14,6 +14,7 @@ import {
     FaLinkedin
 } from 'react-icons/fa';
 import '../css/UserDashboard.css';
+import { fetchAllCropUserDashboard_api,addToCart_api } from './apis_db';
 
 const UserDashboard = () => {
     const [crops, setCrops] = useState([]);
@@ -46,8 +47,7 @@ const UserDashboard = () => {
 
     const fetchCrops = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/crops?search=${search}`);
-            const data = await response.json();
+            const data = await fetchAllCropUserDashboard_api(search)
             setCrops(data);
         } catch (error) {
             console.error("Error fetching crops:", error);
@@ -78,13 +78,7 @@ const UserDashboard = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:4000/add-to-cart", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId, productId: selectedCrop._id, quantity }),
-            });
-
-            const data = await response.json();
+           const data = await addToCart_api(userId, selectedCrop._id, quantity);
             alert(data.message);
             closeModal();
         } catch (error) {

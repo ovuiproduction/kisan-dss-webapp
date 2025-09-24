@@ -8,6 +8,7 @@ import IntelGovMarketForm from "./IntelGovMarketForm";
 import IntelLocalMarketForm from "./IntelLocalMarketForm";
 
 import ChatBot from "./ChatBot";
+import { intelDecisionBuilding_api } from "./apis_ml";
 
 export default function FarmerDashBoard() {
   const navigate = useNavigate();
@@ -47,17 +48,8 @@ export default function FarmerDashBoard() {
     formData.append("storageAvailability", storageAvailability);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/intel-build-decision",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      let responseData = response.data;
-      setData(responseData);
+      const data = await intelDecisionBuilding_api(formData);
+      setData(data);
       console.log(responseData);
     } catch (err) {
       setError("Failed to build decision. Please try again.");

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { fetchUserTransactions_api,fetchUserTransactions_api } from "./apis_db";
 
 const UserTransactions = () => {
     const [userId, setUserId] = useState(null);
@@ -34,8 +35,8 @@ const UserTransactions = () => {
 
     const fetchTransactions = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/users/${userId}/transactions`);
-            setTransactions(response.data.transactions);
+            const data = await fetchUserTransactions_api(userId);
+            setTransactions(data.transactions);
         } catch (error) {
             console.error("Error fetching transactions:", error);
         }

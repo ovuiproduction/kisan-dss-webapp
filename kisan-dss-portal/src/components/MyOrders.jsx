@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import "../css/MyOrders.css";
 
+import { fetchOrderHistory } from "./apis_db";
+
 const MyOrders = () => {
   const [orderHistory, setOrderHistory] = useState([]);
   const [userId, setUserId] = useState("");
@@ -33,9 +35,7 @@ const MyOrders = () => {
   // Fetch Order History
   const fetchOrderHistory = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/order-history?userId=${userId}`);
-      const data = await response.json();
-
+      const data = await fetchOrderHistory(userId);
       if (data.status === "success" && Array.isArray(data.order_history)) {
         setOrderHistory(data.order_history);
       } else {

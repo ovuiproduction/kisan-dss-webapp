@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../static/css/intel_gov_market_form.css";
 
+import { intelMarketPrice_api } from "./apis_ml";
+
 export default function IntelLocalMarketForm({ setLocalMarketForm }) {
   const [commodity, setCommodity] = useState("");
   const [year, setYear] = useState("");
@@ -135,16 +137,9 @@ export default function IntelLocalMarketForm({ setLocalMarketForm }) {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:5000/intel-market-price",
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const responseData = response.data;
+      const data = await intelMarketPrice_api(formData);
       // console.log(responseData)
-      navigate("/intel-gov-market-dashboard", { state: responseData });
+      navigate("/intel-gov-market-dashboard", { state: data });
       setSuccess("Data submitted successfully!");
     } catch (err) {
       setError("Failed to send data. Please try again.");

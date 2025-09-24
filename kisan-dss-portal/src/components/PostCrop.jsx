@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Alert, { AlertSuccess } from "./Alert";
 import "../css/PostCrop.css";
+import { postCrop_api } from "./apis_db";
 
 const PostCrop = () => {
   const [cropname, setCropname] = useState("");
@@ -71,13 +72,8 @@ const PostCrop = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:4000/postcrop", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cropData),
-      });
-
-      const data = await response.json();
+      const data = await postCrop_api(cropData);
+      console.log("Crop posted successfully:", data);
       setStatus(data.status);
       if (data.status === "ok") {
         setTimeout(() => navigate("/home-farmer"), 3000);

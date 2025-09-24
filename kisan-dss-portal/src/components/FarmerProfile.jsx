@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "../css/FarmerProfile.css";
 
+import { fetchFarmerProfile_api } from "./apis_db";
+
 const FarmerProfile = () => {
   const [farmer, setFarmer] = useState(null);
   const navigate = useNavigate();
@@ -26,11 +28,7 @@ const FarmerProfile = () => {
 
   const fetchFarmerProfile = async (email) => {
     try {
-      const response = await fetch(`http://localhost:4000/farmer-profile?email=${encodeURIComponent(email)}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-      const data = await response.json();
+      const data = await fetchFarmerProfile_api(email);
       setFarmer(data);
     } catch (error) {
       console.error("Error fetching farmer profile:", error);

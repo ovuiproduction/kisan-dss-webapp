@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "../css/UserProfile.css";
 
+import { fetchUserProfile_api } from "./apis_db";
+
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -26,11 +28,7 @@ const UserProfile = () => {
 
   const fetchUserProfile = async (email) => {
     try {
-      const response = await fetch(`http://localhost:4000/user-profile?email=${encodeURIComponent(email)}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-      const data = await response.json();
+      const data = await fetchUserProfile_api(email);
       setUser(data);
     } catch (error) {
       console.error("Error fetching user profile:", error);

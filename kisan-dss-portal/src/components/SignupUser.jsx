@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/auth.css";
 
+import { signup_user_api } from "./apis_db";
+
 export default function SignupUser({setIsLogin}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,17 +22,10 @@ export default function SignupUser({setIsLogin}) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:4000/signup-user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, Apartment, district, state, pincode, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Signup failed");
-      }
+      const userData = { name, email, state, district, phone, password,Apartment,pincode };
+      const response = await signup_user_api(userData, "user");
+      console.log("Signup successful:", response);
+      // Optionally, you can log the user in directly after signup
       setIsLogin(true);
       // navigate("/login/user"); // Redirect to login page after successful signup
     } catch (err) {
