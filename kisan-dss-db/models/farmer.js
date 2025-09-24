@@ -1,18 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const farmerSchema = new mongoose.Schema({
-//     name: { type: String, required: true },
-//     email: { type: String, required: true, unique: true },
-//     password: { type: String, required: true },
-//     phone: { type: String, required: true },
-//     state: { type: String, required: true },
-//     district: { type: String, required: true },
-//     coins: { type: Number, default: 0 } // Earned through crop sales
-// });
-
-// module.exports = mongoose.model("Farmer", farmerSchema);
-
-
 const mongoose = require("mongoose");
 
 const farmerSchema = new mongoose.Schema({
@@ -34,4 +19,4 @@ const farmerSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = mongoose.model("Farmer", farmerSchema);
+module.exports = mongoose.model("farmers", farmerSchema);

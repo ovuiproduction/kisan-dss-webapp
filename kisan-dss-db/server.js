@@ -18,6 +18,7 @@ const cropcolls = require("./models/crop");
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const app = express();
 app.use(express.json({ limit: "50mb" })); 
@@ -28,8 +29,8 @@ const nodemailer = require("nodemailer");
 
 const port = 4000;
 
-mongoose.connect("mongodb://localhost:27017/farmCommerce")
-    .then(() => console.log("Connected to database"))
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log("Connected to Atlas Database kisan-dss-db"))
     .catch((err) => console.error("Database connection error:", err));
 
 app.get("/", (req, res) => {

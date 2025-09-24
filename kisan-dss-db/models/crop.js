@@ -4,7 +4,7 @@ const cropSchema = new mongoose.Schema(
   {
     farmerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmer", // Reference to farmers collection
+      ref: "farmers", // Reference to farmers collection
       required: true,
     },
     email: { type: String, required: true },
@@ -28,4 +28,4 @@ const cropSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("cropcolls", cropSchema);
+module.exports = mongoose.model("crops", cropSchema);
