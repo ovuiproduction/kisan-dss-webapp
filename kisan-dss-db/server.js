@@ -27,6 +27,22 @@ mongoose.connect(MONGODB_URI)
     .then(() => console.log("Connected to Atlas Database kisan-dss-db"))
     .catch((err) => console.error("Database connection error:", err));
 
+// Nodemailer Transporter
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+transporter.verify((error, success) => {
+  if (error) console.error("SMTP connection error:", error);
+  else console.log("SMTP connection successful");
+});
+
 app.get("/", (req, res) => {
     res.send("This is the backend server for Kisan-DSS application. Manages farmers, users, and crops efficiently!");
 });
@@ -79,23 +95,6 @@ app.post("/signup-user", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-
-// Nodemailer Transporter
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-transporter.verify((error, success) => {
-  if (error) console.error("SMTP connection error:", error);
-  else console.log("SMTP connection successful");
-});
-
 
 
 // Generate Random 6-Digit OTP
