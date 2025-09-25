@@ -10,18 +10,15 @@ export default function SignupFarmer({setIsLogin}) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
-  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const userData = { name, email, state, district, phone, password };
+      const userData = { name, email, state, district, phone };
       const response = await signup_farmer_api(userData, "farmer");
       console.log("Signup successful:", response);
       // Optionally, you can log the user in directly after signup

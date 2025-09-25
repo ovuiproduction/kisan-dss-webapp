@@ -40,39 +40,13 @@ app.get("/", (req, res) => {
 // Farmer Signup
 app.post("/signup-farmer", async (req, res) => {
     try {
-        const { name, email, state, district, phone, password } = req.body;
+        const { name, email, state, district, phone } = req.body;
 
         let user = await farmerscoll.findOne({ email });
         if (user) return res.status(400).json({ message: "Farmer already exists" });
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user = new farmerscoll({ name, email, password: hashedPassword, phone, state, district });
+        user = new farmerscoll({ name, email, phone, state, district });
         await user.save();
-
         res.status(201).json({ message: "Farmer Signup successful" });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
-
-// Farmer Login
-app.post("/login-farmer", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const user = await farmerscoll.findOne({ email });
-        if (!user) return res.status(400).json({ message: "Invalid credentials" });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
-
-        const token = jwt.sign(
-            { userId: user._id, name: user.name, email: user.email, state: user.state, phone: user.phone, district: user.district, coins: user.coins },
-            secretKey,
-            { expiresIn: "1h" }
-        );
-
-        res.json({ token, user });
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
@@ -81,20 +55,16 @@ app.post("/login-farmer", async (req, res) => {
 // User Signup
 app.post("/signup-user", async (req, res) => {
     try {
-        const { name, email, phone, Apartment, district, state, pincode, password } = req.body;
+        const { name, email, phone, Apartment, district, state, pincode } = req.body;
 
         // Check if user already exists
         let user = await userscoll.findOne({ email });
         if (user) return res.status(400).json({ message: "User already exists" });
 
-        // Hash password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         // Create new user with correct schema structure
         user = new userscoll({
             name,
             email,
-            password: hashedPassword,
             phone,
             address: {
                 Apartment,   // Correctly stored under `address`
@@ -116,31 +86,6 @@ app.post("/signup-user", async (req, res) => {
     }
 });
 
-
-// User Login
-app.post("/login-user", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const user = await userscoll.findOne({ email });
-        if (!user) return res.status(400).json({ message: "Invalid credentials" });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
-
-        const token = jwt.sign(
-            { userId: user._id, name: user.name, email: user.email, state: user.state, phone: user.phone, district: user.district, coins: user.coins },
-            secretKey,
-            { expiresIn: "1h" }
-        );
-
-        res.json({ token, user });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
-
-
 // Nodemailer Transporter
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -156,7 +101,7 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // Request OTP
-app.post("/request-otp", async (req, res) => {
+app.post("/request-otp-user", async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -185,35 +130,7 @@ app.post("/request-otp", async (req, res) => {
     }
 });
 
-// Verify OTP
-// app.post("/verify-otp", async (req, res) => {
-//     try {
-//         const { email, otp } = req.body;
-
-//         const user = await userscoll.findOne({ email });
-//         if (!user || user.otp !== otp) {
-//             return res.status(400).json({ message: "Invalid OTP" });
-//         }
-
-//         // Clear OTP after successful login
-//         user.otp = null;
-//         await user.save();
-
-//         // Generate JWT Token
-//         const token = jwt.sign(
-//             { userId: user._id, name: user.name, email: user.email, state: user.state, phone: user.phone, district: user.district, coins: user.coins  },
-//             secretKey,
-//             { expiresIn: "1h" }
-//         );
-
-//         res.json({ message: "Login successful", token, user });
-
-//     } catch (err) {
-//         res.status(500).json({ message: "Error verifying OTP", error: err.message });
-//     }
-// });
-
-app.post("/verify-otp", async (req, res) => {
+app.post("/verify-otp-user", async (req, res) => {
     try {
         const { email, otp } = req.body;
 
@@ -240,7 +157,6 @@ app.post("/verify-otp", async (req, res) => {
     }
 });
 
-
 app.post("/request-otp-farmer", async (req, res) => {
     try {
         const { email } = req.body;
@@ -261,42 +177,17 @@ app.post("/request-otp-farmer", async (req, res) => {
             text: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
         };
 
+        console.log("Sending OTP email to:", email);
+
         await transporter.sendMail(mailOptions);
 
+        console.log("OTP email sent successfully");
         res.json({ message: "OTP sent successfully" });
 
     } catch (err) {
         res.status(500).json({ message: "Error sending OTP", error: err.message });
     }
 });
-
-// Step 2: Verify OTP
-// app.post("/verify-otp-farmer", async (req, res) => {
-//     try {
-//         const { email, otp } = req.body;
-
-//         const user = await farmerscoll.findOne({ email });
-//         if (!user || user.otp !== otp) {
-//             return res.status(400).json({ message: "Invalid OTP" });
-//         }
-
-//         // Clear OTP after successful login
-//         user.otp = null;
-//         await user.save();
-
-//         // Generate JWT Token
-//         const token = jwt.sign(
-//             { userId: user._id, name: user.name, email: user.email, state: user.state, phone: user.phone, district: user.district, coins: user.coins  },
-//             secretKey,
-//             { expiresIn: "1h" }
-//         );
-
-//         res.json({ message: "Login successful", token, user });
-
-//     } catch (err) {
-//         res.status(500).json({ message: "Error verifying OTP", error: err.message });
-//     }
-// });
 
 app.post("/verify-otp-farmer", async (req, res) => {
     try {
@@ -391,9 +282,6 @@ app.get("/image/:id", async (req, res) => {
     }
 });
 
-
-
-
 app.get("/active-crops", async (req, res) => {
     try {
         console.log("Active crops request arrived");
@@ -457,33 +345,6 @@ app.get("/history-crops", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
-
-
-// app.get("/api/farmers/:farmerId/transactions", async (req, res) => {
-//     try {
-//         const { farmerId } = req.params;
-//         console.log("Received request for farmer ID:", farmerId);
-
-//         if (!mongoose.Types.ObjectId.isValid(farmerId)) {
-//             console.error("Invalid Farmer ID format:", farmerId);
-//             return res.status(400).json({ message: "Invalid Farmer ID format" });
-//         }
-
-//         const farmer = await farmerscoll.findById(farmerId);
-
-//         if (!farmer) {
-//             console.error("Farmer not found with ID:", farmerId);
-//             return res.status(404).json({ message: "Farmer not found" });
-//         }
-
-//         console.log("Farmer found. Returning transactions:", farmer.transactions);
-//         res.json({ transactions: farmer.transactions });
-//     } catch (error) {
-//         console.error("Server error:", error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
 
 app.get("/api/farmers/:farmerId/transactions", async (req, res) => {
     try {
