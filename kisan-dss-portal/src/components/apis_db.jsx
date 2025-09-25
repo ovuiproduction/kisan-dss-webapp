@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://kisan-dss-db.onrender.com";
 
 // api.jsx
 export const fetchActiveCrops_api = async (email) => {
