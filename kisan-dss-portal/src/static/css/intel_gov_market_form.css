@@ -1,4 +1,4 @@
-.intel-price-form-root{
+  .intel-price-form-root{
   --primary-green: #2d572c;
   --fresh-green: #4caf50;
   --earth-brown: #8d6e63;
@@ -12,24 +12,28 @@
     top:0px;
     left:0px;
     width:100vw;
-    min-height:100vh;
-    height: auto;
+    height:100vh;
     background-color:rgba(0, 62, 9, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index:1000;
+    z-index:100;
+    padding:1rem;
+    box-sizing: border-box;
 }
 
 .intel-price-form-container{
-    width:30%;
-    height:auto;
+    width: 100%;
+    max-width: 500px;
+    height:90%;
     background-color: white;
     border-radius:1rem;
     color:black;
     font-family: sans-serif;
     padding:1rem;
     border-top: 5px solid var(--fresh-green);
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .intel-price-form-header{
@@ -62,8 +66,8 @@
 
   .formcontent-group{
     display: grid;
-    grid-template-columns:1fr 1fr;
-    gap:3rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .close-form-price-prediction{
@@ -77,6 +81,7 @@
     border-radius:3px;
     border:0.5px solid rgb(219, 216, 216);
     background-color:white;
+    cursor: pointer;
   }
 
   .close-form-price-prediction:hover{
@@ -91,4 +96,57 @@
 
   .intel-form-header-subtitle{
     font-size: 12px;
+  }
+
+  /* Tablet and larger screens */
+  @media (min-width: 768px) {
+    .intel-price-form-container{
+        width: 60%;
+        max-width: 600px;
+    }
+    
+    .formcontent-group{
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+  }
+
+  /* Desktop screens */
+  @media (min-width: 1024px) {
+    .intel-price-form-container{
+        width: 30%;
+        max-width: none;
+    }
+    
+    .formcontent-group{
+        gap: 3rem;
+    }
+  }
+
+  /* Small mobile screens */
+  @media (max-width: 480px) {
+    .intel-price-form-root{
+        padding: 0.5rem;
+    }
+    
+    .intel-price-form-container{
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+    }
+    
+    .intel-price-form-header{
+        font-size: 1.1rem;
+        padding: 0.5rem 0px 1rem 0px;
+    }
+    
+    .close-form-price-prediction{
+        right: 0.25rem;
+        top: 0.1rem;
+        font-size: 1rem;
+        padding: 0.05rem 0.4rem;
+    }
+    
+    .formcontent-group{
+        gap: 1rem;
+    }
   }
