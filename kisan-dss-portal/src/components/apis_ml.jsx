@@ -12,9 +12,7 @@ export const intelDecisionBuilding_api = async (formData) => {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to get decision");
-    }
+    
     const data = response.data;
     return data;
   } catch (error) {
@@ -34,9 +32,7 @@ export const cropRecommendation_api = async (formData) => {
         },
       }
     );  
-    if (!response.ok) {
-      throw new Error("Failed to get recommendation");
-    }
+   
     const data = response.data;
     return data;
   } catch (error) {
@@ -56,9 +52,6 @@ export const intelWPIPrice_api = async (formData) => {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to get WPI price");
-    }
     const data = response.data;
     return data;
   } catch (error) {
@@ -78,9 +71,7 @@ export const IntelGovScheme_api = async (formData) => {
         },  
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to get government schemes");
-    }
+   
     const data = response.data;
     return data;
   }
@@ -101,9 +92,6 @@ export const intelMarketPrice_api = async (formData) => {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to get market price");
-    }
     const data = response.data;
     return data;
   } catch (error) {

@@ -30,6 +30,7 @@ export default function IntelGovMarketForm({setGovMarketForm}) {
     try {
       setLoading(true);
       const data = await intelWPIPrice_api(formData);
+      console.log("Received data:", data);
       navigate("/intel-gov-market-price", { state: data });
       setSuccess("Data submitted successfully!");
     } catch (err) {
