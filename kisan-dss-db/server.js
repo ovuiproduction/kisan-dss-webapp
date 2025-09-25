@@ -28,19 +28,27 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.error("Database connection error:", err));
 
 // Nodemailer Transporter
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  service: "SendGrid",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "apikey", 
+    pass: process.env.SENDGRID_API_KEY,
   },
 });
 
 transporter.verify((error, success) => {
-  if (error) console.error("SMTP connection error:", error);
-  else console.log("SMTP connection successful");
+  if (error) console.error("SendGrid connection error:", error);
+  else console.log("SendGrid transporter ready");
 });
 
 app.get("/", (req, res) => {
