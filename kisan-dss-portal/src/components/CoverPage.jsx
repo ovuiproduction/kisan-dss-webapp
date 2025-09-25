@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaTractor, FaUser, FaLeaf } from "react-icons/fa";
+import { GiFarmer } from "react-icons/gi";
 import HelpModal from "./HelpModal";
 import AuthComponents from "./AuthComponent";
 import "../css/CoversPage.css";
@@ -61,7 +62,7 @@ const CoverPage = () => {
             whileHover={{ scale: 1.05 }}
           >
             <div className="card-front">
-              <FaTractor className="card-icon" />
+              <GiFarmer className="card-icon" />
               <h2>Farmer Login</h2>
               <p>Direct from the fields</p>
             </div>

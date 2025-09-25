@@ -8,6 +8,10 @@
     background: linear-gradient(145deg, #0f4910 0%, #62bc6f 100%);
 }
 
+::-webkit-scrollbar{
+    display: none;
+}
+
 .background-gradient {
     position: absolute;
     width: 100%;
