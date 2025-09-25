@@ -2,15 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-
-// const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const { Translate } = require("@google-cloud/translate").v2;
-
-
-// const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const farmerscoll = require("./models/farmer");
 const userscoll = require("./models/user");
@@ -88,14 +82,21 @@ app.post("/signup-user", async (req, res) => {
 
 // Nodemailer Transporter
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
+
+transporter.verify((error, success) => {
+  if (error) console.error("SMTP connection error:", error);
+  else console.log("SMTP connection successful");
+});
+
+
 
 // Generate Random 6-Digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
