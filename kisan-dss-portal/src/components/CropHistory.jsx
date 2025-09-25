@@ -18,8 +18,7 @@ const CropHistory = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
-
+  
     if (token) {
       try {
         const decoded = jwtDecode(token);

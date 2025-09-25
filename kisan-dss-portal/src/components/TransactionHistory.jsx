@@ -14,7 +14,6 @@ const TransactionHistory = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log("Decoded Farmer ID:", decoded.userId);
         setFarmerId(decoded.userId);
       } catch (error) {
         console.error("Invalid token", error);
@@ -55,7 +54,7 @@ const TransactionHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.length > 0 ? (
+            {transactions && transactions.length > 0 ? (
               transactions.map((txn, index) => (
                 <tr key={index} className="text-center border">
                   <td className="py-2 px-4 border">{txn.cropName}</td>

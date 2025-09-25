@@ -15,8 +15,6 @@ const ActiveCrops = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
-
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -59,19 +57,9 @@ const ActiveCrops = () => {
     }
   };
 
-  let returnHome = async (e) => {
-    e.preventDefault();
-    navigate("/home-farmer");
-  };
 
   return (
     <>
-      <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-T3c6oIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-        crossOrigin="anonymous"
-      ></link>
       <script
         src="https://kit.fontawesome.com/dd438282bc.js"
         crossOrigin="anonymous"
@@ -80,7 +68,7 @@ const ActiveCrops = () => {
       <div className="activecrop-container">
         <h2>Active Crops for Sale</h2>
         <div className="activecrop-list">
-          {activeCrops.length > 0 ? (
+          {(activeCrops && activeCrops.length > 0) ? (
             activeCrops.map((crop) => (
               <div key={crop._id} className="activecrop-card">
                 {crop.imageBase64 && (
