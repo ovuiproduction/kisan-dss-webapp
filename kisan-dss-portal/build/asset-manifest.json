@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.05de0388.css",
-    "main.js": "/static/js/main.70dbfbe1.js",
+    "main.css": "/static/css/main.a098344a.css",
+    "main.js": "/static/js/main.d2124e79.js",
     "static/media/Masoor.jpg": "/static/media/Masoor.ee729292bc3bce6bbaeb.jpg",
     "static/media/Moong.jpg": "/static/media/Moong.4fb85dc7d267ea59f66c.jpg",
     "static/media/Smart_Decision_Building.mp4": "/static/media/Smart_Decision_Building.4a3c138ce15e427326e1.mp4",
@@ -17,6 +17,7 @@
     "static/media/Soyabean.jpg": "/static/media/Soyabean.4a93a40176ed65eb660a.jpg",
     "static/media/fa-brands-400.ttf": "/static/media/fa-brands-400.1815e00441357e01619e.ttf",
     "static/media/fa-solid-900.woff2": "/static/media/fa-solid-900.2463b90d9a316e4e5294.woff2",
+    "static/media/kisan-dss-logo.png": "/static/media/kisan-dss-logo.ebbf91a193d90d15dfc4.png",
     "static/media/Tur.jpg": "/static/media/Tur.09bfa90f422ad9f91acd.jpg",
     "static/media/Groundnut.jpg": "/static/media/Groundnut.3468a1af0d90dc866f01.jpg",
     "static/media/fa-brands-400.woff2": "/static/media/fa-brands-400.c210719e60948b211a12.woff2",
@@ -32,11 +33,11 @@
     "static/media/fa-v4compatibility.ttf": "/static/media/fa-v4compatibility.da94ef451f4969af06e6.ttf",
     "static/media/fa-v4compatibility.woff2": "/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
     "index.html": "/index.html",
-    "main.05de0388.css.map": "/static/css/main.05de0388.css.map",
-    "main.70dbfbe1.js.map": "/static/js/main.70dbfbe1.js.map"
+    "main.a098344a.css.map": "/static/css/main.a098344a.css.map",
+    "main.d2124e79.js.map": "/static/js/main.d2124e79.js.map"
   },
   "entrypoints": [
-    "static/css/main.05de0388.css",
-    "static/js/main.70dbfbe1.js"
+    "static/css/main.a098344a.css",
+    "static/js/main.d2124e79.js"
   ]
 }

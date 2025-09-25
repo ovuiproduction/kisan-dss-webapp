@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { fetchUserTransactions_api,fetchUserTransactions_api } from "./apis_db";
+import { fetchUserTransactions_api } from "./apis_db";
 
 const UserTransactions = () => {
     const [userId, setUserId] = useState(null);
