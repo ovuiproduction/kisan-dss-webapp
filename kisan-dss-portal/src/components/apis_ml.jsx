@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_BASE_URL = "https://onkar81-kisan-dss.hf.space";
+const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
 
 export const intelDecisionBuilding_api = async (formData) => {
   try {
