@@ -762,7 +762,7 @@ async function runChat(userInput) {
     const genAI = new GoogleGenerativeAI(process.env.API_KEY); // or replace with your actual API_KEY string
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-2.5-flash",
       generationConfig: {
         temperature: 0.9,
         topK: 1,
@@ -811,7 +811,8 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
     });
 
     const result = await chat.sendMessage(userInput);
-    const response = await result.response;
+    const response = result.response;
+    console.log("AI chatbot response:", response.text());
     return response.text();
   } catch (error) {
     console.error("Error in AI chatbot:", error);
@@ -856,7 +857,7 @@ app.post("/chat", async (req, res) => {
 
     // 🔹 Get chatbot response (processed in English)
     const chatbotResponse = await runChat(userInput);
-
+    console.log("Chatbot Response:", chatbotResponse);
     // // 🔹 Translate chatbot response back to detected language
     // const translatedResponse = await translateText(chatbotResponse, detectedLanguage);
 

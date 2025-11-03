@@ -72,6 +72,7 @@ const ChatBot = () => {
 
     try {
       const botMessage = await sendMessage_api(userInput);
+      console.log("User Input:", botMessage);
       setMessages([...newMessages, { text: botMessage, sender: "bot" }]);
     } catch (error) {
       console.error("Error:", error);

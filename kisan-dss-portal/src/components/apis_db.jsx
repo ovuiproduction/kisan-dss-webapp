@@ -1,6 +1,6 @@
 import axios from "axios";
-const API_BASE_URL = "https://kisan-dss-db.onrender.com";
-// const API_BASE_URL = "http://localhost:4000";
+// const API_BASE_URL = "https://kisan-dss-db.onrender.com";
+const API_BASE_URL = "http://localhost:4000";
 
 // api.jsx
 export const fetchActiveCrops_api = async (email) => {
@@ -42,17 +42,10 @@ export const deleteCrop_api = async (cropId) => {
 
 export const sendMessage_api = async (userInput) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/chat`, { userInput });
-    let botMessage = response.data.response;
-
-    // Format the bot's response to support bold text using HTML
-    botMessage = botMessage
-      .replace(/\\(.?)\\/g, "<strong>$1</strong>") // Convert **bold* to <strong>bold</strong>
-      .replace(/\n/g, "<br />"); // Convert new lines to <br>
-
-    if (!response.ok) {
-      throw new Error("Failed to send message");
-    }
+    const ChatResponse = await axios.post(`${API_BASE_URL}/chat`, { userInput });
+     console.log("ChatResponse:", ChatResponse);
+    let botMessage = ChatResponse.data.response;
+    console.log("Bot Message:", botMessage);
     return botMessage;
   } catch (error) {
     console.error("Error in sendMessage:", error);
