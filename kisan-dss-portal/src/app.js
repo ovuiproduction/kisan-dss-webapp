@@ -22,11 +22,12 @@ import CropHistory from "./components/CropHistory";
 import MyCart from "./components/MyCart";
 import MyOrders from "./components/MyOrders";
 
-import IntelCropRec from "./components/IntelCropRec";
+// import IntelCropRec from "./components/IntelCropRec";
 import IntelCropRecResult from "./components/IntelCropRecResult";
 
 import IntelGovScheme from "./components/IntelGovScheme";
-
+import IntelCultivationGuide from "./components/IntelCultivationGuide";
+import IntelCultivationPractices from "./components/IntelCultivationPractices";
 
 export default function App() {
   return (
@@ -49,10 +50,13 @@ export default function App() {
           element={<IntelLocalMarket />}
         />
 
-        <Route path="/intel-crop-recommendation" element={<IntelCropRec />} />
+        {/* <Route path="/intel-crop-recommendation" element={<IntelCropRec />} /> */}
         <Route path="/intel-crop-rec-result" element={<IntelCropRecResult />} />
 
         <Route path="/intel-goverment-scheme" element={<IntelGovScheme />} />
+        <Route path="/intel-cultivation-guide" element={<IntelCultivationGuide />} />
+        <Route path="/intel-cultivation-practices" element={<IntelCultivationPractices />} />
+        
 
         <Route path="/login/farmer" element={<LoginFarmer />} />
         <Route path="/signup/farmer" element={<SignupFarmer />} />

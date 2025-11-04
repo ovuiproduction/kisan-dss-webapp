@@ -39,7 +39,7 @@ export default function LoginFarmer({ setIsLogin }) {
       sessionStorage.setItem("token", data.token);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
+      sessionStorage.setItem("user", JSON.stringify(data.user));
       navigate("/farmer-dashboard"); // Redirect to home page
     } catch (err) {
       setError(err.message);

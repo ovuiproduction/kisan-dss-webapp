@@ -4,7 +4,6 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const { Translate } = require("@google-cloud/translate").v2;
 const sgMail = require("@sendgrid/mail");
 
 const farmerscoll = require("./models/farmer");
@@ -723,33 +722,6 @@ app.get("/api/users/:userId/transactions", async (req, res) => {
   }
 });
 
-const MODEL_NAME = "gemini-pro";
-const API_KEY = process.env.API_KEY;
-const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
-
-const translate = new Translate({ key: GOOGLE_TRANSLATE_API_KEY });
-
-// ✅ Function to detect language
-const detectLanguage = async (text) => {
-  try {
-    const [detection] = await translate.detect(text);
-    return detection.language;
-  } catch (error) {
-    console.error("Error detecting language:", error);
-    return "en"; // Default to English if detection fails
-  }
-};
-
-// ✅ Function to translate text
-const translateText = async (text, targetLang) => {
-  try {
-    const [translatedText] = await translate.translate(text, targetLang);
-    return translatedText;
-  } catch (error) {
-    console.error("Error translating text:", error);
-    return text; // Return original text if translation fails
-  }
-};
 
 const {
   GoogleGenerativeAI,
@@ -812,7 +784,7 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
 
     const result = await chat.sendMessage(userInput);
     const response = result.response;
-    console.log("AI chatbot response:", response.text());
+    // console.log("AI chatbot response:", response.text());
     return response.text();
   } catch (error) {
     console.error("Error in AI chatbot:", error);
@@ -820,26 +792,6 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
   }
 }
 
-// ✅ API: Detect Language
-app.post("/detect-language", async (req, res) => {
-  try {
-    const [detection] = await translate.detect(req.body.text);
-    res.json({ language: detection.language });
-  } catch (error) {
-    res.status(500).json({ error: "Error detecting language" });
-  }
-});
-
-// ✅ API: Translate Text
-app.post("/translate", async (req, res) => {
-  try {
-    const { text, targetLang } = req.body;
-    const [translatedText] = await translate.translate(text, targetLang);
-    res.json({ translatedText });
-  } catch (error) {
-    res.status(500).json({ error: "Error translating text" });
-  }
-});
 
 // ✅ API: Chatbot with Multilingual Support
 app.post("/chat", async (req, res) => {
@@ -848,20 +800,8 @@ app.post("/chat", async (req, res) => {
     if (!userInput) {
       return res.status(400).json({ error: "Invalid request body" });
     }
-
-    // // 🔹 Detect language of user input
-    // const detectedLanguage = await detectLanguage(userInput);
-    const detectedLanguage = "en";
-    // // 🔹 Translate user input to English before sending to chatbot
-    // const translatedInput = await translateText(userInput, "en");
-
-    // 🔹 Get chatbot response (processed in English)
     const chatbotResponse = await runChat(userInput);
-    console.log("Chatbot Response:", chatbotResponse);
-    // // 🔹 Translate chatbot response back to detected language
-    // const translatedResponse = await translateText(chatbotResponse, detectedLanguage);
-
-    res.json({ response: chatbotResponse, detectedLanguage });
+    res.json({ response: chatbotResponse});
   } catch (error) {
     console.error("Error in chat endpoint:", error);
     res.status(500).json({ error: "Internal Server Error" });

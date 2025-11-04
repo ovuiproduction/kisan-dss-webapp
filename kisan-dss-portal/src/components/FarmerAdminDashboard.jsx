@@ -33,8 +33,6 @@ const FarmerAdminDashboard = () => {
 
         {/* Main Content */}
         <main className="FarmerAdmin_main">
-          <h2 className="FarmerAdmin_title">Crop Commerce Hub</h2>
-
           <div className="FarmerAdmin_card">
             {/* Sidebar */}
             <div className="FarmerAdmin_sidebar">

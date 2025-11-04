@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import "../css/chatbot.css";
-
 import { sendMessage_api } from "./apis_db";
+import {speak} from "./SpeakMessages.jsx";
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [listening, setListening] = useState(false);
+  const [language, setLanguage] = useState("en-IN");
 
-  // Speech recognition setup
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
   if (recognition) {
     recognition.continuous = false;
-    recognition.lang = "en-US";
+    recognition.lang = language;
     recognition.interimResults = false;
   }
 
-  // Handle voice input
   const startListening = () => {
     if (!recognition) {
       alert("Speech recognition not supported in your browser.");
@@ -36,31 +41,9 @@ const ChatBot = () => {
         const transcript = event.results[0][0].transcript;
         setUserInput(transcript);
       };
-
-      recognition.onend = () => {
-        setListening(false);
-      };
+      recognition.onend = () => setListening(false);
     }
   }, []);
-
-  // Text-to-Speech function
-
-  const speak = (text) => {
-    if (window.speechSynthesis.speaking) {
-      // Stop speech if already speaking
-      window.speechSynthesis.cancel();
-      return;
-    }
-
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "en-US";
-    speech.rate = 1;
-    speech.pitch = 1;
-
-    window.speechSynthesis.speak(speech);
-  };
-
-  // Handle text message submission
 
   const sendMessage = async (event) => {
     event.preventDefault();
@@ -72,7 +55,6 @@ const ChatBot = () => {
 
     try {
       const botMessage = await sendMessage_api(userInput);
-      console.log("User Input:", botMessage);
       setMessages([...newMessages, { text: botMessage, sender: "bot" }]);
     } catch (error) {
       console.error("Error:", error);
@@ -92,15 +74,19 @@ const ChatBot = () => {
             key={index}
             className={msg.sender === "user" ? "user-message" : "bot-message"}
           >
-            <span dangerouslySetInnerHTML={{ __html: msg.text }} />
+            <ReactMarkdown remarkPlugins={[remarkGfm]} >
+              {msg.text}
+            </ReactMarkdown>
+
             {msg.sender === "bot" && (
-              <button className="speak-btn" onClick={() => speak(msg.text)}>
+              <button className="speak-btn" onClick={() => speak(msg.text,language)}>
                 🔊
               </button>
             )}
           </div>
         ))}
       </div>
+
       <form onSubmit={sendMessage} className="chat-form">
         <input
           type="text"
@@ -108,6 +94,10 @@ const ChatBot = () => {
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Ask AgriBot..."
         />
+        <select className="bot-language-selector" name="language" value={language} onChange={handleLanguageChange}>
+          <option value="hi-IN">हिंदी</option>
+          <option value="en-IN">English</option>
+        </select>
         <button type="submit">Send</button>
         <button type="button" className="voice-btn" onClick={startListening}>
           🎤 {listening ? "Listening..." : "Voice"}

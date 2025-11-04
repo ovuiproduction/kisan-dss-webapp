@@ -122,12 +122,14 @@
 
 .Priceresult_weather-section {
     display: grid;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin: auto;
 }
 
 .Priceresult_weather-item {
-    padding: 1rem;
+    padding: 1.5rem;
+    line-height: 1.6;
     border-radius: 8px;
     text-align: center;
 }

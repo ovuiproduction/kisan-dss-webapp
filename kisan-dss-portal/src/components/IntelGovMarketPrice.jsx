@@ -77,7 +77,7 @@ export default function IntelGovMarketPrice() {
       <div id="Priceresult_root">
         <nav className="Priceresult_glass-nav">
           <div className="Priceresult_nav-content">
-            <a href="/farmer-dashboard" className="Priceresult_logo">Kisan DSS</a>
+            <a href="/farmer-dashboard" className="Priceresult_logo">APMC Market Guide</a>
             <div className="Priceresult_nav-links">
               <a href="/farmer-dashboard" className="Priceresult_nav-link"><i className="fas fa-home"></i> Home</a>
             </div>
@@ -146,10 +146,6 @@ export default function IntelGovMarketPrice() {
                     <p className="month">{state.silverMonthIndex} - {new Date(0, state.silverMonthIndex - 1).toLocaleString('en-US', { month: 'long' })}</p>
                   </div>
                 </div>
-                <div className="Priceresult_weather-warning">
-                  <i className="fas fa-exclamation-triangle"></i>
-                  <p>Prediction variance possible with rainfall deviation</p>
-                </div>
               </div>
             </div>
           </div>
@@ -210,15 +206,6 @@ export default function IntelGovMarketPrice() {
             </div>
           </div>
 
-          <div className="Priceresult_warning-card Priceresult_glass-card">
-            <div className="Priceresult_warning-icon">
-              <i className="fas fa-exclamation-triangle"></i>
-            </div>
-            <div className="Priceresult_warning-content">
-              <h3>Forecast Advisory</h3>
-              <p>If there is variation between actual rainfall and expected rainfall, predictions may deviate from shown values. Always monitor weather updates for accurate planning.</p>
-            </div>
-          </div>
 
           <div className="Priceresult_visualization-section">
             <div className="Priceresult_graph-card Priceresult_glass-card">

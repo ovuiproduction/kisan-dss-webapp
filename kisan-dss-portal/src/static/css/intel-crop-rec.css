@@ -1,9 +1,23 @@
 /* intel-crop-rec.css */
 .intel-crop-rec-root {
-    background: linear-gradient(135deg, #f0f7da 0%, #d8edd3 100%);
-    min-height: 100vh;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: fixed;
+    top:0;
+    left:0;
+    z-index: 10000;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    height: 100vh;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.intel-crop-rec-main-block{
+    max-width: 900px;
+    margin: 3rem auto;
+    background: #f9f9f9;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
 }
 
 .intel-price-nav {
@@ -100,6 +114,7 @@
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+    position: relative;
 }
 
 .sub-yield-form-block {
@@ -206,4 +221,23 @@
     .intel-header-content a {
         margin: 0 1rem;
     }
+}
+
+.closebtn-crop-rec{
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background:white;
+    color:red;
+    border:1px solid red;
+    border-radius: 5px;
+    padding: 2px 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.closebtn-crop-rec:hover {
+    background: red;
+    color: white;
 }

@@ -37,7 +37,7 @@ export default function IntelGovScheme() {
       <div className="govscheme_intel-crop-rec-root">
         <nav className="govscheme_intel-price-nav">
           <div className="govscheme_intel-header-logotext">
-            Gov Schemes &ndash; <i>Bridging Farmers with Government Support!</i>
+            Intel Government Schemes
           </div>
           <div className="govscheme_intel-header-content">
             <a href="/farmer-dashboard">Home</a>

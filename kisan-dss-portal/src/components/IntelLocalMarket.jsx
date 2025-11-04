@@ -127,7 +127,7 @@ export default function IntelLocalMarket() {
       <nav className="Priceresult_glass-nav">
         <div className="Priceresult_nav-content">
           <a href="/farmer-dashboard" className="Priceresult_logo">
-            Kisan DSS
+            Local Markets Guide
           </a>
           <div className="Priceresult_nav-links">
             <a href="/farmer-dashboard" className="Priceresult_nav-link">

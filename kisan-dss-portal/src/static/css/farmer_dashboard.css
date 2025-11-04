@@ -409,3 +409,352 @@
       font-size: 1rem;
     }
   }
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+  .service-card {
+  background: white;
+  border: 1px solid #e8f5e8;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #4a8c2d, #2d5016);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.service-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.service-title {
+  color: #2d5016;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.service-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.service-btn {
+  background: #4a8c2d;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.service-btn:hover {
+  background: #2d5016;
+  transform: translateY(-2px);
+}
+
+/* Farmer Profile Button */
+.farmer-profile {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 1000;
+}
+
+.farmer-profile button {
+  background: linear-gradient(135deg, #4a8c2d, #2d5016);
+  color: white;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.farmer-profile button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.farmer-profile button:active {
+  transform: scale(0.95);
+}
+
+/* Optional: Add a tooltip on hover */
+.farmer-profile button::after {
+  content: 'Farmer Card';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  margin-top: 0.5rem;
+}
+
+.farmer-profile button:hover::after {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .farmer-profile {
+    top: 1rem;
+    left: 1rem;
+  }
+  
+  .farmer-profile button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}
+
+
+/* Profile Card Backdrop */
+.profile-card-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Aadhaar Style Profile Card */
+.aadhaar-profile-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90vw;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    border: 2px solid #e0e0e0;
+    overflow: hidden;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card Header */
+.aadhaar-header {
+    background: linear-gradient(135deg, #4a8c2d, #2d5016);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #3a7c1d;
+}
+
+.aadhaar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.logo-circle {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #4a8c2d;
+}
+
+.aadhaar-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.aadhaar-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Card Body */
+.aadhaar-body {
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    background: white;
+}
+
+.aadhaar-photo-section {
+    flex-shrink: 0;
+}
+
+.aadhaar-photo {
+    width: 100px;
+    height: 120px;
+    background: linear-gradient(135deg, #f8fff8, #e8f5e8);
+    border: 2px solid #4a8c2d;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a8c2d;
+    font-size: 2rem;
+}
+
+.aadhaar-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.aadhaar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.aadhaar-row:last-child {
+    border-bottom: none;
+}
+
+.aadhaar-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+    min-width: 80px;
+}
+
+.aadhaar-value {
+    color: #333;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+    padding-left: 1rem;
+}
+
+.earnings {
+    color: #2d5016;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Card Footer */
+.aadhaar-footer {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-top: 2px solid #e0e0e0;
+    text-align: center;
+}
+
+.aadhaar-number {
+    color: #666;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .aadhaar-body {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .aadhaar-photo {
+        margin: 0 auto;
+    }
+
+    .aadhaar-row {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+
+    .aadhaar-value {
+        text-align: center;
+        padding-left: 0;
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background: #f1f8e9;
+    color: #2d572c;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+}

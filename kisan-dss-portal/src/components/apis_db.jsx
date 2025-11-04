@@ -43,7 +43,6 @@ export const deleteCrop_api = async (cropId) => {
 export const sendMessage_api = async (userInput) => {
   try {
     const ChatResponse = await axios.post(`${API_BASE_URL}/chat`, { userInput });
-     console.log("ChatResponse:", ChatResponse);
     let botMessage = ChatResponse.data.response;
     console.log("Bot Message:", botMessage);
     return botMessage;

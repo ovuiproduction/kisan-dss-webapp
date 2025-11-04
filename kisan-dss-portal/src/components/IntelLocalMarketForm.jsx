@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../static/css/intel_gov_market_form.css";
 
 import { intelMarketPrice_api } from "./apis_ml";
 
-export default function IntelLocalMarketForm({ setLocalMarketForm }) {
+export default function IntelLocalMarketForm({ setLocalMarketForm}) {
   const [commodity, setCommodity] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
@@ -305,7 +305,7 @@ export default function IntelLocalMarketForm({ setLocalMarketForm }) {
               <input
                 type="number"
                 className="form-control"
-                placeholder="15.4"
+                placeholder="15"
                 value={milage}
                 onChange={(e) => setMilage(e.target.value)}
               />

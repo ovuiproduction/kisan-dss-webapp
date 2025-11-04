@@ -88,7 +88,7 @@ export default function IntelCropRecResult() {
                   <th scope="col">Expected Price (per Quintal)</th>
                   <th scope="col">Expected Yield (Quintal/hec)</th>
                   <th scope="col">Your Area (hec)</th>
-                  <th scope="col">Expected Total Price</th>
+                  <th scope="col">Expected Total Price (₹)</th>
                 </tr>
               </thead>
               <tbody>
