@@ -95,6 +95,7 @@ const ChatBot = () => {
           placeholder="Ask AgriBot..."
         />
         <select className="bot-language-selector" name="language" value={language} onChange={handleLanguageChange}>
+          <option value="hi-IN">मराठी</option>
           <option value="hi-IN">हिंदी</option>
           <option value="en-IN">English</option>
         </select>

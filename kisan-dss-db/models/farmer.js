@@ -15,7 +15,11 @@ const farmerSchema = new mongoose.Schema({
             coinsEarned: { type: Number, required: true },
             date: { type: Date, default: Date.now } // Timestamp for the transaction
         }
-    ]
+    ],
+    weatherAdvisory: [{
+        advisoryText: { type: String },
+        expiryDate: { type: Date, default: Date.now },
+    }]
 });
 
 module.exports = mongoose.model("farmers", farmerSchema);

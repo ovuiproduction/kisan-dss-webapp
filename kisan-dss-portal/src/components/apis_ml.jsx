@@ -101,6 +101,26 @@ export const IntelCultivation_api = async (formData) => {
   }
 };
 
+export const IntelWeatherAdvisory_api = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/intel-weather-advisory`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data; // returns { weatherAdvisory: ... }
+  } catch (error) {
+    console.error("Error in IntelWeatherAdvisory_api:", error);
+    throw error;
+  }
+};
+
+
 export const intelMarketPrice_api = async (formData) => {
   try {
     const response = await axios.post(  

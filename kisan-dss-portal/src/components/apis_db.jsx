@@ -350,3 +350,41 @@ export  const fetchUserTransactions_api = async (userId) => {
     throw error; // rethrow to handle it in the caller
   }
 };
+
+
+export const updateWeatherAdvisory = async (advisoryText,expiryDate) => {
+  try {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const userId = user?._id;
+    const response = await fetch(`${API_BASE_URL}/update-weather-advisory`, {     
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ advisoryText,expiryDate,userId }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to add to cart");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in updating weather advisory:", error);
+    throw error;
+  }
+};
+
+export const getWeatherAdvisory = async () => {
+  try {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const userId = user?._id;
+
+    const response = await axios.get(`${API_BASE_URL}/get-weather-advisory`, {
+      params: { userId },
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error in fetching weather advisory:", error);
+    throw error;
+  }
+};

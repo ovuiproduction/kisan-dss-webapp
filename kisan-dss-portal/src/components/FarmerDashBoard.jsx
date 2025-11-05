@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../static/css/farmer_dashboard.css";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import IntelGovMarketForm from "./IntelGovMarketForm";
 import IntelLocalMarketForm from "./IntelLocalMarketForm";
@@ -9,7 +11,8 @@ import FarmerProfileCard from "./FarmerProfileCard";
 import IntelCropRecommendationForm from "./IntelCropRecommendationForm";
 
 import ChatBot from "./ChatBot";
-import { intelDecisionBuilding_api } from "./apis_ml";
+import { intelDecisionBuilding_api, IntelWeatherAdvisory_api } from "./apis_ml";
+import { getWeatherAdvisory, updateWeatherAdvisory } from "./apis_db";
 
 export default function FarmerDashBoard() {
   const navigate = useNavigate();
@@ -22,6 +25,8 @@ export default function FarmerDashBoard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showProfile, setShowProfile] = useState(false);
+  const [weatherAdvisory, setWeatherAdvisory] = useState(null);
+  const [isScrollOpen, setIsScrollOpen] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
 
@@ -29,7 +34,8 @@ export default function FarmerDashBoard() {
 
   const [govMarketForm, setGovMarketForm] = useState(false);
   const [localMarketForm, setLocalMarketForm] = useState(false);
-  const [intelCropRecommendationForm, setIntelCropRecommendationForm] = useState(false);
+  const [intelCropRecommendationForm, setIntelCropRecommendationForm] =
+    useState(false);
 
   const handleChatBot = (e) => {
     e.preventDefault();
@@ -76,67 +82,173 @@ export default function FarmerDashBoard() {
     {
       icon: "🌱",
       title: "Smart Crop Recommendation",
-      description: "Grow the Right Crop, at the Right Time! Get AI-powered crop suggestions based on your soil and climate.",
+      description:
+        "Grow the Right Crop, at the Right Time! Get AI-powered crop suggestions based on your soil and climate.",
       action: () => setIntelCropRecommendationForm(true),
-      type: "button"
+      type: "button",
     },
     {
       icon: "🤝",
       title: "Government Schemes",
-      description: "Bridging Farmers with Government Support! Discover and apply for beneficial government schemes.",
+      description:
+        "Bridging Farmers with Government Support! Discover and apply for beneficial government schemes.",
       link: "/intel-goverment-scheme",
-      type: "link"
+      type: "link",
     },
     {
       icon: "🧑‍🌾",
       title: "Cultivation Guide",
-      description: "Learn modern farming techniques and best practices for optimal crop yield and sustainable farming.",
+      description:
+        "Learn modern farming techniques and best practices for optimal crop yield and sustainable farming.",
       link: "/intel-cultivation-guide",
-      type: "link"
+      type: "link",
     },
     {
       icon: "🏛️",
       title: "Government APMC",
-      description: "Agricultural market platform with real-time commodity prices & APMC Market price forecasting.",
+      description:
+        "Agricultural market platform with real-time commodity prices & APMC Market price forecasting.",
       action: () => setGovMarketForm(true),
-      type: "button"
+      type: "button",
     },
     {
       icon: "🛒",
       title: "Local Mandi",
-      description: "Connect with regional local markets and local traders. Local market price forecasting, transportation cost calculation and market recommendation.",
+      description:
+        "Connect with regional local markets and local traders. Local market price forecasting, transportation cost calculation and market recommendation.",
       action: () => setLocalMarketForm(true),
-      type: "button"
+      type: "button",
     },
     {
       icon: "📦",
       title: "E-Commerce",
-      description: "Producer to Consumer Service. Direct digital marketplace connecting farmers with consumers.",
+      description:
+        "Producer to Consumer Service. Direct digital marketplace connecting farmers with consumers.",
       action: farmerAdminNavigation,
-      type: "button"
-    }
+      type: "button",
+    },
   ];
 
   const handleFarmerProfile = () => {
     setShowProfile(true);
-  }
+  };
+
+  const getWeatherAdvice = async () => {
+    if (user.district === undefined) return;
+    const payload = { city: user.district }; // or dynamic city
+    const res = await IntelWeatherAdvisory_api(payload);
+    console.log("Weather Advisory:", res.weatherAdvisory);
+    setWeatherAdvisory(res.weatherAdvisory);
+    return res.weatherAdvisory;
+  };
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      if (localStorage.getItem("weatherAdvisory")) {
+        setWeatherAdvisory(localStorage.getItem("weatherAdvisory"));
+        return;
+      }
+      if (!user || weatherAdvisory) return;
+
+      try {
+        console.log("Fetching weather advisory for district:", user.district);
+        // Get advisory from DB
+        const dbAdvisory = await getWeatherAdvisory();
+        const currentDate = new Date();
+
+        if (
+          dbAdvisory.weatherAdvisory &&
+          new Date(dbAdvisory.weatherAdvisory.expiryDate) > currentDate
+        ) {
+          console.log("✅ Using cached weather advisory");
+          setWeatherAdvisory(dbAdvisory.weatherAdvisory.advisoryText);
+          localStorage.setItem(
+            "weatherAdvisory",
+            dbAdvisory.weatherAdvisory.advisoryText
+          );
+          return;
+        }
+
+        // Else get fresh advisory from backend API
+        console.log("⚠️ Cache expired → fetching fresh advisory");
+        const newAdvisory = getWeatherAdvice();
+
+        // Set to state
+        setWeatherAdvisory(newAdvisory);
+        localStorage.setItem("weatherAdvisory", newAdvisory);
+
+        // Save to DB (valid for 4 days)
+        const expiryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+        await updateWeatherAdvisory(newAdvisory, expiryDate);
+      } catch (err) {
+        console.error("Weather advisory fetch error:", err);
+      }
+    };
+
+    fetchWeatherData();
+  }, [user]);
 
   return (
     <div className="farmer-dashboard-root">
       <div className="farmer-dashboard-root">
-            {/* Your existing dashboard content */}
-            
-            <div className="farmer-profile">
-                <button onClick={handleFarmerProfile}>
-                    <i className="fa-solid fa-user"></i>
-                </button>
-            </div>
-
-            {showProfile && <FarmerProfileCard onClose={() => setShowProfile(false)} />}
+        <div className="farmer-profile">
+          <button onClick={handleFarmerProfile}>
+            <i className="fa-solid fa-user"></i>
+          </button>
         </div>
+
+        {showProfile && (
+          <FarmerProfileCard onClose={() => setShowProfile(false)} />
+        )}
+      </div>
       <div id="cover_root">
         <div className="cover_container">
           <h1 className="cover_heading">🌾 Agricultural Services Gateway</h1>
+
+          <main>
+            {weatherAdvisory && (
+              <div className="weather-advisory-section">
+                <div
+                  className={`scroll-container ${
+                    isScrollOpen ? "open" : "closed"
+                  }`}
+                >
+                  <div
+                    className="scroll-header"
+                    onClick={() => setIsScrollOpen(!isScrollOpen)}
+                  >
+                    <h2>🌤️ Weather Advisory & Guidance</h2>
+                    <button
+                      className="scroll-toggle"
+                      aria-label="Toggle weather advisory"
+                    >
+                      <span className={`arrow ${isScrollOpen ? "up" : "down"}`}>
+                        ▼
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="scroll-content">
+                    <div className="scroll-paper">
+                      {weatherAdvisory === "loading" ? (
+                        <div className="loading-message">
+                          <span className="loading-spinner"></span>
+                          <p>
+                            Receiving weather advisory from the royal
+                            meteorologists...
+                          </p>
+                        </div>
+                      ) : (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {weatherAdvisory}
+                        </ReactMarkdown>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </main>
 
           <main className="farmer-dashboard-smart-container">
             {loading && (
@@ -288,7 +400,7 @@ export default function FarmerDashBoard() {
             <IntelGovMarketForm setGovMarketForm={setGovMarketForm} />
           )}
           {localMarketForm && (
-            <IntelLocalMarketForm setLocalMarketForm={setLocalMarketForm}/>
+            <IntelLocalMarketForm setLocalMarketForm={setLocalMarketForm} />
           )}
 
           {intelCropRecommendationForm && (
@@ -322,12 +434,9 @@ export default function FarmerDashBoard() {
               ))}
             </div>
           </div>
-
         </div>
 
         {chatBot && <ChatBot />}
-
-        
 
         <div className="farmer-bot-block">
           <button onClick={handleChatBot} className="farmer-bot-btn">
@@ -335,9 +444,9 @@ export default function FarmerDashBoard() {
           </button>
         </div>
       </div>
-      
+
       <footer>
-      <p>© 2026 Kisan Decision Support System. All rights reserved.</p>
+        <p>© 2026 Kisan Decision Support System. All rights reserved.</p>
       </footer>
     </div>
   );

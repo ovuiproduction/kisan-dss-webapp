@@ -1,17 +1,13 @@
 const speak = (text, language) => {
-  // Stop any ongoing speech
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
-    setTimeout(() => startSpeaking(cleanText(text), language), 100);
     return;
   }
-
   startSpeaking(cleanText(text), language);
 };
 
 const cleanText = (text) => {
   let cleaned = text;
-
   // Remove markdown formatting
   cleaned = cleaned.replace(/(\*\*|__)(.*?)\1/g, '$2'); // Bold
   cleaned = cleaned.replace(/(\*|_)(.*?)\1/g, '$2'); // Italic

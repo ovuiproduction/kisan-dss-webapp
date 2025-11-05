@@ -9,6 +9,7 @@ const sgMail = require("@sendgrid/mail");
 const farmerscoll = require("./models/farmer");
 const userscoll = require("./models/user");
 const cropcolls = require("./models/crop");
+const { ObjectId } = require('mongodb');
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
@@ -807,6 +808,72 @@ app.post("/chat", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+app.post("/update-weather-advisory", async (req, res) => {
+  try {
+    const { advisoryText, expiryDate, userId } = req.body;
+    // Validate input
+    if (!userId || !advisoryText || !expiryDate) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const user = await farmerscoll.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Initialize array if not present
+    if (!user.weatherAdvisory) {
+      user.weatherAdvisory = [];
+    }
+
+    // Push new advisory
+    user.weatherAdvisory.push({ advisoryText, expiryDate });
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Weather advisory updated successfully",
+    });
+
+  } catch (error) {
+    console.error("Error updating weather advisory:", error);
+    res.status(500).json({
+      message: "Error updating weather advisory",
+      error: error.message
+    });
+  }
+});
+
+app.get("/get-weather-advisory", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) return res.status(400).json({ message: "User ID required" });
+ 
+    const user = await farmerscoll.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.weatherAdvisory || user.weatherAdvisory.length === 0) {
+      return res.status(200).json({
+        message: "No weather advisory set for this user",
+        weatherAdvisory: null
+      });
+    }
+
+    const lastAdvisory = user.weatherAdvisory[user.weatherAdvisory.length - 1];
+
+    return res.status(200).json({
+      message: "Weather advisory fetched successfully",
+      weatherAdvisory: lastAdvisory
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching weather advisory",
+      error: error.message
+    });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(
