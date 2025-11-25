@@ -25,7 +25,7 @@ export default function FarmerDashBoard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showProfile, setShowProfile] = useState(false);
-  const [weatherAdvisory, setWeatherAdvisory] = useState(null);
+  const [weatherAdvisory, setWeatherAdvisory] = useState("Loading Weather Advisory...");
   const [isScrollOpen, setIsScrollOpen] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
