@@ -1,6 +1,6 @@
 import axios from "axios";
-const API_BASE_URL = "https://kisan-dss-db.onrender.com";
-// const API_BASE_URL = "http://localhost:4000";
+// const API_BASE_URL = "https://kisan-dss-db.onrender.com";
+const API_BASE_URL = "http://localhost:4000";
 
 // api.jsx
 export const fetchActiveCrops_api = async (email) => {
@@ -380,7 +380,7 @@ export const getWeatherAdvisory = async () => {
     const response = await axios.get(`${API_BASE_URL}/get-weather-advisory`, {
       params: { userId },
     });
-
+    console.log(response.data);
     return response.data;
 
   } catch (error) {

@@ -145,6 +145,7 @@ export default function FarmerDashBoard() {
   useEffect(() => {
     const fetchWeatherData = async () => {
       if (localStorage.getItem("weatherAdvisory")) {
+        console.log("Weather Advisory fetched from localstorage")
         setWeatherAdvisory(localStorage.getItem("weatherAdvisory"));
         return;
       }
@@ -171,8 +172,8 @@ export default function FarmerDashBoard() {
 
         // Else get fresh advisory from backend API
         console.log("⚠️ Cache expired → fetching fresh advisory");
-        const newAdvisory = getWeatherAdvice();
-
+        const newAdvisory = await getWeatherAdvice();
+       
         // Set to state
         setWeatherAdvisory(newAdvisory);
         localStorage.setItem("weatherAdvisory", newAdvisory);
