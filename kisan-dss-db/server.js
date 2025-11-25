@@ -4,24 +4,30 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const sgMail = require("@sendgrid/mail");
+// const sgMail = require("@sendgrid/mail");
+const Mailjet = require("node-mailjet");
 
 const farmerscoll = require("./models/farmer");
 const userscoll = require("./models/user");
 const cropcolls = require("./models/crop");
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
+
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
 const MONGODB_URI = process.env.MONGODB_URI;
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const mailjet = new Mailjet({
+  apiKey: process.env.MJ_APIKEY_PUBLIC,
+  apiSecret: process.env.MJ_APIKEY_PRIVATE,
+});
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 
 const port = 4000;
 
@@ -55,15 +61,44 @@ mongoose
 // });
 
 const sendMail = async (mailOptions) => {
-  try {
-    await sgMail.send(mailOptions);
-    console.log("Email sent successfully");
-  } catch (error) {
-    console.error("Error sending email:", error);
-    if (error.response) {
-      console.error("SendGrid response error:", error.response.body);
-    }
-  }
+  const request = mailjet.post("send", { version: "v3.1" }).request({
+    Messages: [
+      {
+        From: {
+          Email: mailOptions.from,
+          Name: "Kisan DSS Portal",
+        },
+        To: [
+          {
+            Email: mailOptions.to,
+            Name: mailOptions.to_name,
+          },
+        ],
+        Subject: mailOptions.subject,
+        TextPart: mailOptions.text,
+        HTMLPart:
+          `<h2>${mailOptions.otp}</h2><h3>Your OTP is: ${mailOptions.otp}. It will expire in 5 minutes.</h3>`,
+      },
+    ],
+  });
+  request
+    .then((result) => {
+      console.log("OTP sent successfully");
+      if(result.body.Messages[0].Status === "success") return 200
+      else return 500
+    })
+    .catch((err) => {
+      console.log(err.statusCode);
+    });
+  // try {
+  //   await sgMail.send(mailOptions);
+  //   console.log("Email sent successfully");
+  // } catch (error) {
+  //   console.error("Error sending email:", error);
+  //   if (error.response) {
+  //     console.error("SendGrid response error:", error.response.body);
+  //   }
+  // }
 };
 
 app.get("/", (req, res) => {
@@ -143,13 +178,18 @@ app.post("/request-otp-user", async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
+      to_name:user.name,
+      otp:otp,
       subject: `Kisan DSS Portal Login OTP`,
       text: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
     };
 
-    await sendMail(mailOptions);
-
-    res.json({ message: "OTP sent successfully" });
+    let response = await sendMail(mailOptions);
+    if(response==200){
+      res.status(200).json({ message: "OTP sent successfully" });
+    }else{
+      res.status(500).json({ message:"Error sending OTP"});
+    }
   } catch (err) {
     res.status(500).json({ message: "Error sending OTP", error: err.message });
   }
@@ -199,6 +239,8 @@ app.post("/request-otp-farmer", async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
+      to_name:user.name,
+      otp:otp,
       subject: `Kisan DSS Portal Login OTP`,
       text: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
     };
@@ -285,12 +327,10 @@ app.post("/postcrop", async (req, res) => {
     console.log(farmerId);
     const farmer = await farmerscoll.findById(farmerId);
     if (!farmer) {
-      return res
-        .status(400)
-        .json({
-          status: "error",
-          message: "Invalid farmerId, farmer does not exist",
-        });
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid farmerId, farmer does not exist",
+      });
     }
 
     if (!image) {
@@ -561,13 +601,11 @@ app.post("/cart/buy", async (req, res) => {
     const crop = await cropcolls.findById(productId);
     if (!crop || crop.quantity < cartItem.quantity) {
       console.log("Insufficient stock or crop not found");
-      return res
-        .status(400)
-        .json({
-          message: `Insufficient stock for ${
-            crop ? crop.cropname : "Unknown Crop"
-          }`,
-        });
+      return res.status(400).json({
+        message: `Insufficient stock for ${
+          crop ? crop.cropname : "Unknown Crop"
+        }`,
+      });
     }
     // console.log("Crop found:", crop);
     console.log("Farmer ID from crop:", crop?.farmerId);
@@ -723,7 +761,6 @@ app.get("/api/users/:userId/transactions", async (req, res) => {
   }
 });
 
-
 const {
   GoogleGenerativeAI,
   HarmCategory,
@@ -793,7 +830,6 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
   }
 }
 
-
 // ✅ API: Chatbot with Multilingual Support
 app.post("/chat", async (req, res) => {
   try {
@@ -802,7 +838,7 @@ app.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "Invalid request body" });
     }
     const chatbotResponse = await runChat(userInput);
-    res.json({ response: chatbotResponse});
+    res.json({ response: chatbotResponse });
   } catch (error) {
     console.error("Error in chat endpoint:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -833,12 +869,11 @@ app.post("/update-weather-advisory", async (req, res) => {
     return res.status(200).json({
       message: "Weather advisory updated successfully",
     });
-
   } catch (error) {
     console.error("Error updating weather advisory:", error);
     res.status(500).json({
       message: "Error updating weather advisory",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -847,14 +882,14 @@ app.get("/get-weather-advisory", async (req, res) => {
   try {
     const { userId } = req.query;
     if (!userId) return res.status(400).json({ message: "User ID required" });
- 
+
     const user = await farmerscoll.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (!user.weatherAdvisory || user.weatherAdvisory.length === 0) {
       return res.status(200).json({
         message: "No weather advisory set for this user",
-        weatherAdvisory: null
+        weatherAdvisory: null,
       });
     }
 
@@ -862,18 +897,16 @@ app.get("/get-weather-advisory", async (req, res) => {
 
     return res.status(200).json({
       message: "Weather advisory fetched successfully",
-      weatherAdvisory: lastAdvisory
+      weatherAdvisory: lastAdvisory,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
       message: "Error fetching weather advisory",
-      error: error.message
+      error: error.message,
     });
   }
 });
-
 
 app.listen(port, () => {
   console.log(
