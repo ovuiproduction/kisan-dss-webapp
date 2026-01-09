@@ -868,6 +868,7 @@ app.post("/update-weather-advisory", async (req, res) => {
 
     return res.status(200).json({
       message: "Weather advisory updated successfully",
+      weatherAdvisory: { advisoryText, expiryDate },
     });
   } catch (error) {
     console.error("Error updating weather advisory:", error);

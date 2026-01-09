@@ -142,30 +142,42 @@ export default function FarmerDashBoard() {
     return res.weatherAdvisory;
   };
 
+  function getSafeParsedLocalStorage(key) {
+  try {
+    const value = localStorage.getItem(key);
+    console.log("Retrieved from localStorage:", value);
+    return value ? JSON.parse(value) : null;
+  } catch {
+    return null;
+  }
+}
+
   useEffect(() => {
     const fetchWeatherData = async () => {
-      if (localStorage.getItem("weatherAdvisory")) {
+      const currentDate = new Date();
+      const localStorageWeatherAdvisory = getSafeParsedLocalStorage("weatherAdvisory");
+    
+      if (localStorageWeatherAdvisory != null && localStorageWeatherAdvisory.advisoryText != null && new Date(localStorageWeatherAdvisory.expiryDate) >= currentDate) {
         console.log("Weather Advisory fetched from localstorage")
-        setWeatherAdvisory(localStorage.getItem("weatherAdvisory"));
+        setWeatherAdvisory(localStorageWeatherAdvisory.advisoryText);
         return;
       }
-      if (!user || weatherAdvisory) return;
-
+      if (!user || weatherAdvisory != "Loading Weather Advisory...") return;
+      
       try {
         console.log("Fetching weather advisory for district:", user.district);
         // Get advisory from DB
         const dbAdvisory = await getWeatherAdvisory();
-        const currentDate = new Date();
 
         if (
           dbAdvisory.weatherAdvisory &&
-          new Date(dbAdvisory.weatherAdvisory.expiryDate) > currentDate
+          new Date(dbAdvisory.weatherAdvisory.expiryDate) >= currentDate
         ) {
           console.log("✅ Using cached weather advisory");
           setWeatherAdvisory(dbAdvisory.weatherAdvisory.advisoryText);
           localStorage.setItem(
             "weatherAdvisory",
-            dbAdvisory.weatherAdvisory.advisoryText
+            JSON.stringify(dbAdvisory.weatherAdvisory)
           );
           return;
         }
@@ -176,11 +188,11 @@ export default function FarmerDashBoard() {
        
         // Set to state
         setWeatherAdvisory(newAdvisory);
-        localStorage.setItem("weatherAdvisory", newAdvisory);
-
+        
         // Save to DB (valid for 4 days)
         const expiryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-        await updateWeatherAdvisory(newAdvisory, expiryDate);
+        const newWeatherAdvisory = await updateWeatherAdvisory(newAdvisory, expiryDate);
+        localStorage.setItem("weatherAdvisory", JSON.stringify(newWeatherAdvisory));
       } catch (err) {
         console.error("Weather advisory fetch error:", err);
       }
@@ -441,7 +453,7 @@ export default function FarmerDashBoard() {
 
         <div className="farmer-bot-block">
           <button onClick={handleChatBot} className="farmer-bot-btn">
-            <i class="fa-solid fa-robot"></i>
+            <i className="fa-solid fa-robot"></i>
           </button>
         </div>
       </div>

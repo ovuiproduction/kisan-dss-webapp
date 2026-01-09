@@ -365,7 +365,7 @@ export const updateWeatherAdvisory = async (advisoryText,expiryDate) => {
     if (!response.ok) {
       throw new Error(data.message || "Failed to add to cart");
     }
-    return data;
+    return data.weatherAdvisory;
   } catch (error) {
     console.error("Error in updating weather advisory:", error);
     throw error;
