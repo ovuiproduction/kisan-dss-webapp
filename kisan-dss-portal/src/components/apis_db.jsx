@@ -1,6 +1,6 @@
 import axios from "axios";
-const API_BASE_URL = "https://kisan-dss-db.onrender.com";
-// const API_BASE_URL = "http://localhost:4000";
+// const API_BASE_URL = "https://kisan-dss-db.onrender.com";
+const API_BASE_URL = "http://localhost:4000";
 
 // api.jsx
 export const fetchActiveCrops_api = async (email) => {
@@ -42,6 +42,7 @@ export const deleteCrop_api = async (cropId) => {
 
 export const sendMessage_api = async (userInput) => {
   try {
+    console.log("Sending message to API:");
     const ChatResponse = await axios.post(`${API_BASE_URL}/chat`, { userInput });
     let botMessage = ChatResponse.data.response;
     console.log("Bot Message:", botMessage);

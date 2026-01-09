@@ -12,7 +12,6 @@ const userscoll = require("./models/user");
 const cropcolls = require("./models/crop");
 const { ObjectId } = require("mongodb");
 
-
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -76,16 +75,15 @@ const sendMail = async (mailOptions) => {
         ],
         Subject: mailOptions.subject,
         TextPart: mailOptions.text,
-        HTMLPart:
-          `<h2>${mailOptions.otp}</h2><h3>Your OTP is: ${mailOptions.otp}. It will expire in 5 minutes.</h3>`,
+        HTMLPart: `<h2>${mailOptions.otp}</h2><h3>Your OTP is: ${mailOptions.otp}. It will expire in 5 minutes.</h3>`,
       },
     ],
   });
   request
     .then((result) => {
       console.log("OTP sent successfully");
-      if(result.body.Messages[0].Status === "success") return 200
-      else return 500
+      if (result.body.Messages[0].Status === "success") return 200;
+      else return 500;
     })
     .catch((err) => {
       console.log(err.statusCode);
@@ -178,17 +176,17 @@ app.post("/request-otp-user", async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      to_name:user.name,
-      otp:otp,
+      to_name: user.name,
+      otp: otp,
       subject: `Kisan DSS Portal Login OTP`,
       text: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
     };
 
     let response = await sendMail(mailOptions);
-    if(response==200){
+    if (response == 200) {
       res.status(200).json({ message: "OTP sent successfully" });
-    }else{
-      res.status(500).json({ message:"Error sending OTP"});
+    } else {
+      res.status(500).json({ message: "Error sending OTP" });
     }
   } catch (err) {
     res.status(500).json({ message: "Error sending OTP", error: err.message });
@@ -239,8 +237,8 @@ app.post("/request-otp-farmer", async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      to_name:user.name,
-      otp:otp,
+      to_name: user.name,
+      otp: otp,
       subject: `Kisan DSS Portal Login OTP`,
       text: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
     };
@@ -822,7 +820,7 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
 
     const result = await chat.sendMessage(userInput);
     const response = result.response;
-    // console.log("AI chatbot response:", response.text());
+    console.log("AI chatbot response:", response.text());
     return response.text();
   } catch (error) {
     console.error("Error in AI chatbot:", error);
@@ -833,6 +831,7 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
 // ✅ API: Chatbot with Multilingual Support
 app.post("/chat", async (req, res) => {
   try {
+    console.log("Chat request received");
     const userInput = req.body?.userInput;
     if (!userInput) {
       return res.status(400).json({ error: "Invalid request body" });

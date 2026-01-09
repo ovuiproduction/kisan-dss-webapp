@@ -1,49 +1,72 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "../css/chatbot.css";
 import { sendMessage_api } from "./apis_db";
-import {speak} from "./SpeakMessages.jsx";
+import { speak } from "./SpeakMessages.jsx";
+
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [listening, setListening] = useState(false);
   const [language, setLanguage] = useState("en-IN");
+  const recognitionRef = useRef(null);
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
   };
 
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+  
+  useEffect(() => {
+    if (!SpeechRecognition) {
+      console.warn("Speech recognition not supported");
+      return;
+    }
 
-  if (recognition) {
+    const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.lang = language;
     recognition.interimResults = false;
-  }
+    recognition.lang = language;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      console.log("Transcript:", transcript);
+      setUserInput(transcript);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.stop();
+    };
+  }, [language]);
 
   const startListening = () => {
-    if (!recognition) {
+    if (!recognitionRef.current) {
       alert("Speech recognition not supported in your browser.");
       return;
     }
-    setListening(true);
-    recognition.start();
-  };
 
-  useEffect(() => {
-    if (recognition) {
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setUserInput(transcript);
-      };
-      recognition.onend = () => setListening(false);
+    if (listening) {
+      recognitionRef.current.stop();
+      setListening(false);
+    } else {
+      setListening(true);
+      recognitionRef.current.start();
     }
-  }, []);
+  };
 
   const sendMessage = async (event) => {
     event.preventDefault();
@@ -74,12 +97,15 @@ const ChatBot = () => {
             key={index}
             className={msg.sender === "user" ? "user-message" : "bot-message"}
           >
-            <ReactMarkdown remarkPlugins={[remarkGfm]} >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {msg.text}
             </ReactMarkdown>
 
             {msg.sender === "bot" && (
-              <button className="speak-btn" onClick={() => speak(msg.text,language)}>
+              <button
+                className="speak-btn"
+                onClick={() => speak(msg.text, language)}
+              >
                 🔊
               </button>
             )}
@@ -94,7 +120,12 @@ const ChatBot = () => {
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Ask AgriBot..."
         />
-        <select className="bot-language-selector" name="language" value={language} onChange={handleLanguageChange}>
+        <select
+          className="bot-language-selector"
+          name="language"
+          value={language}
+          onChange={handleLanguageChange}
+        >
           <option value="hi-IN">मराठी</option>
           <option value="hi-IN">हिंदी</option>
           <option value="en-IN">English</option>
