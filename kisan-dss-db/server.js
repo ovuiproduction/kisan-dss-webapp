@@ -42,30 +42,6 @@ mongoose
   .then(() => console.log("Connected to Atlas Database kisan-dss-db"))
   .catch((err) => console.error("Database connection error:", err));
 
-// Nodemailer Transporter
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: process.env.EMAIL_USER,
-//     pass: process.env.EMAIL_PASS,
-//   },
-// });
-
-// const transporter = nodemailer.createTransport({
-//   service: "SendGrid",
-//   auth: {
-//     user: "apikey",
-//     pass: process.env.SENDGRID_API_KEY,
-//   },
-// });
-
-// transporter.verify((error, success) => {
-//   if (error) console.error("SendGrid connection error:", error);
-//   else console.log("SendGrid transporter ready");
-// });
-
 const sendMail = async (mailOptions) => {
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: [
@@ -95,15 +71,6 @@ const sendMail = async (mailOptions) => {
     .catch((err) => {
       console.log(err.statusCode);
     });
-  // try {
-  //   await sgMail.send(mailOptions);
-  //   console.log("Email sent successfully");
-  // } catch (error) {
-  //   console.error("Error sending email:", error);
-  //   if (error.response) {
-  //     console.error("SendGrid response error:", error.response.body);
-  //   }
-  // }
 };
 
 app.get("/", (req, res) => {
@@ -777,7 +744,7 @@ async function runChat(userInput) {
     const genAI = new GoogleGenerativeAI(process.env.API_KEY); // or replace with your actual API_KEY string
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash-lite",
       generationConfig: {
         temperature: 0.9,
         topK: 1,
@@ -838,7 +805,6 @@ Ignore all unrelated topics. Default to Maharashtra unless a different state is 
 // ✅ API: Chatbot with Multilingual Support
 app.post("/chat", async (req, res) => {
   try {
-    console.log("Chat request received");
     const userInput = req.body?.userInput;
     if (!userInput) {
       return res.status(400).json({ error: "Invalid request body" });
