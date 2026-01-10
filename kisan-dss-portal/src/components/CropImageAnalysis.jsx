@@ -5,7 +5,7 @@ import { intelCropImageAnalysis } from "./apis_ml";
 import ReactMarkdown from "react-markdown";
 import "../css/CropImageAnalysis.css";
 
-const CropImageAnalysis = ({onClose}) => {
+const CropImageAnalysis = () => {
   const [imageFile, setImageFile] = useState(null);
   const [language, setLanguage] = useState("en");
   const [loading, setLoading] = useState(false);
