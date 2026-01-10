@@ -22,6 +22,7 @@ export const intelDecisionBuilding_api = async (formData) => {
   }
 };
 
+
 export const cropRecommendation_api = async (formData) => {
   try {
     const response = await axios.post(  
@@ -136,6 +137,47 @@ export const intelMarketPrice_api = async (formData) => {
     return data;
   } catch (error) {
     console.error("Error in intelMarketPrice:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+
+export const intelCropImageAnalysis = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/intel-crop-image-analysis`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in intelCropImageAnalysis:", error);
+    throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const IntelGovSchemeSupport = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/intel-gov-scheme-support`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error in intelGovSchemeSupport:", error);
     throw error; // rethrow to handle it in the caller
   }
 };

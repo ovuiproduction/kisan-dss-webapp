@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 // const sgMail = require("@sendgrid/mail");
@@ -11,6 +12,8 @@ const farmerscoll = require("./models/farmer");
 const userscoll = require("./models/user");
 const cropcolls = require("./models/crop");
 const { ObjectId } = require("mongodb");
+
+const uploadRoutes = require("./routes/upload");
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
@@ -28,6 +31,10 @@ app.use(cors());
 
 // const nodemailer = require("nodemailer");
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Routes
+app.use("/upload-image", uploadRoutes);
 const port = 4000;
 
 mongoose
@@ -770,7 +777,7 @@ async function runChat(userInput) {
     const genAI = new GoogleGenerativeAI(process.env.API_KEY); // or replace with your actual API_KEY string
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
       generationConfig: {
         temperature: 0.9,
         topK: 1,

@@ -39,6 +39,7 @@
     gap: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
 }
 
 /* Smooth scrolling effect */
@@ -140,7 +141,7 @@
 }
 
 /* Send button */
-.chat-form button[type="submit"] {
+.chat-form button[type="button"] {
     padding: 14px 28px;
     background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
     color: white;
@@ -335,4 +336,108 @@
     .voice-btn {
         padding: 10px 14px;
     }
+}
+
+.suggestions-box {
+  position: absolute;
+  bottom: 52px; /* 👈 opens above input */
+  left:18%;
+  max-width:50%;
+  width: max-content;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 6px 0;
+  font-family: "Noto Sans Devanagari", "Mangal", sans-serif;
+}
+
+/* Each suggestion */
+.suggestions-box li {
+  list-style: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+/* Hover & keyboard highlight */
+.suggestions-box li:hover,
+.suggestions-box li.active {
+  background-color: #f1f5ff;
+}
+
+/* Scrollbar styling */
+.suggestions-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions-box::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .suggestions-box {
+    max-height: 180px;
+    font-size: 15px;
+  }
+}
+
+.welcome-banner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.welcome-banner img {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.welcome-banner h2 {
+    margin-top: 15px;
+    color: #ffffff;
+    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-banner p {
+    margin-top: 10px;
+    color: #f0f0f0;
+    font-size: 16px;
+    text-align: center;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+.loading-indicator {
+    margin: auto auto 20px 20px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}   
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

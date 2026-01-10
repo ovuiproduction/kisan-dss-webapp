@@ -1,4 +1,9 @@
 const speak = (text, language) => {
+
+  if(language === "mr-IN") {
+    language = "hi-IN";
+  }
+
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     return;

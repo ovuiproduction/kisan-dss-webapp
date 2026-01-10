@@ -9,6 +9,7 @@ import IntelGovMarketForm from "./IntelGovMarketForm";
 import IntelLocalMarketForm from "./IntelLocalMarketForm";
 import FarmerProfileCard from "./FarmerProfileCard";
 import IntelCropRecommendationForm from "./IntelCropRecommendationForm";
+import GovSupport from "./GovSupport";
 
 import ChatBot from "./ChatBot";
 import { intelDecisionBuilding_api, IntelWeatherAdvisory_api } from "./apis_ml";
@@ -25,8 +26,12 @@ export default function FarmerDashBoard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showProfile, setShowProfile] = useState(false);
-  const [weatherAdvisory, setWeatherAdvisory] = useState("Loading Weather Advisory...");
+  const [weatherAdvisory, setWeatherAdvisory] = useState(
+    "Loading Weather Advisory..."
+  );
   const [isScrollOpen, setIsScrollOpen] = useState(false);
+
+  const [govSupport, setGovSupport] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
 
@@ -44,6 +49,10 @@ export default function FarmerDashBoard() {
     } else {
       setChatBot(true);
     }
+  };
+
+  const handleCropImageAnalysis = () => {
+    navigate("/intel-crop-image-analysis");
   };
 
   const handleSubmit = async (e) => {
@@ -143,27 +152,32 @@ export default function FarmerDashBoard() {
   };
 
   function getSafeParsedLocalStorage(key) {
-  try {
-    const value = localStorage.getItem(key);
-    console.log("Retrieved from localStorage:", value);
-    return value ? JSON.parse(value) : null;
-  } catch {
-    return null;
+    try {
+      const value = localStorage.getItem(key);
+      console.log("Retrieved from localStorage:", value);
+      return value ? JSON.parse(value) : null;
+    } catch {
+      return null;
+    }
   }
-}
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       const currentDate = new Date();
-      const localStorageWeatherAdvisory = getSafeParsedLocalStorage("weatherAdvisory");
-    
-      if (localStorageWeatherAdvisory != null && localStorageWeatherAdvisory.advisoryText != null && new Date(localStorageWeatherAdvisory.expiryDate) >= currentDate) {
-        console.log("Weather Advisory fetched from localstorage")
+      const localStorageWeatherAdvisory =
+        getSafeParsedLocalStorage("weatherAdvisory");
+
+      if (
+        localStorageWeatherAdvisory != null &&
+        localStorageWeatherAdvisory.advisoryText != null &&
+        new Date(localStorageWeatherAdvisory.expiryDate) >= currentDate
+      ) {
+        console.log("Weather Advisory fetched from localstorage");
         setWeatherAdvisory(localStorageWeatherAdvisory.advisoryText);
         return;
       }
       if (!user || weatherAdvisory != "Loading Weather Advisory...") return;
-      
+
       try {
         console.log("Fetching weather advisory for district:", user.district);
         // Get advisory from DB
@@ -185,14 +199,20 @@ export default function FarmerDashBoard() {
         // Else get fresh advisory from backend API
         console.log("⚠️ Cache expired → fetching fresh advisory");
         const newAdvisory = await getWeatherAdvice();
-       
+
         // Set to state
         setWeatherAdvisory(newAdvisory);
-        
+
         // Save to DB (valid for 4 days)
         const expiryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-        const newWeatherAdvisory = await updateWeatherAdvisory(newAdvisory, expiryDate);
-        localStorage.setItem("weatherAdvisory", JSON.stringify(newWeatherAdvisory));
+        const newWeatherAdvisory = await updateWeatherAdvisory(
+          newAdvisory,
+          expiryDate
+        );
+        localStorage.setItem(
+          "weatherAdvisory",
+          JSON.stringify(newWeatherAdvisory)
+        );
       } catch (err) {
         console.error("Weather advisory fetch error:", err);
       }
@@ -451,8 +471,29 @@ export default function FarmerDashBoard() {
 
         {chatBot && <ChatBot />}
 
+        {govSupport && <GovSupport onClose={() => setGovSupport(false)} />}
+
+        <div className="left-side-block">
+          <button
+            onClick={handleCropImageAnalysis}
+            className="farmer-bot-btn"
+            title="Crop Image Analysis"
+          >
+            <i className="fa-solid fa-camera"></i>
+          </button>
+
+          <button
+            
+            onClick={() => setGovSupport(!govSupport)}
+            className="farmer-bot-btn"
+            title="Government Schemes & Support"
+          >
+            <i  className="fa-solid fa-landmark"></i>
+          </button>
+        </div>
+
         <div className="farmer-bot-block">
-          <button onClick={handleChatBot} className="farmer-bot-btn">
+          <button title="KD-ChatBot" onClick={handleChatBot} className="farmer-bot-btn">
             <i className="fa-solid fa-robot"></i>
           </button>
         </div>

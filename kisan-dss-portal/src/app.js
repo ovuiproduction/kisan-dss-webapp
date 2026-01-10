@@ -29,6 +29,10 @@ import IntelGovScheme from "./components/IntelGovScheme";
 import IntelCultivationGuide from "./components/IntelCultivationGuide";
 import IntelCultivationPractices from "./components/IntelCultivationPractices";
 
+
+import IntelCropImageAnalysis from "./components/CropImageAnalysis";
+import GovSupport from "./components/GovSupport";
+
 export default function App() {
   return (
     <Router>
@@ -57,6 +61,10 @@ export default function App() {
         <Route path="/intel-cultivation-guide" element={<IntelCultivationGuide />} />
         <Route path="/intel-cultivation-practices" element={<IntelCultivationPractices />} />
         
+
+        <Route path="/intel-crop-image-analysis" element={<IntelCropImageAnalysis />} />
+        <Route path="/gov-support" element={<GovSupport />} />
+
 
         <Route path="/login/farmer" element={<LoginFarmer />} />
         <Route path="/signup/farmer" element={<SignupFarmer />} />
