@@ -479,7 +479,7 @@ export default function FarmerDashBoard() {
             className="farmer-bot-btn"
             title="Crop Image Analysis"
           >
-            <i className="fa-solid fa-camera"></i>
+            <i className="fa-solid fa-leaf"></i>
           </button>
 
           <button

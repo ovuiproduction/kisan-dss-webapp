@@ -59,11 +59,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.gov-support-modal-header h2::before {
-  content: "🌱";
-  font-size: 28px;
+  color: white;
 }
 
 .gov-support-close-btn {
@@ -102,6 +98,10 @@
   font-size: 14px;
 }
 
+.gov-support-modal-footer p {
+  margin: 0;
+}
+
 .gov-support-farmer-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -128,10 +128,6 @@
   gap: 8px;
 }
 
-.gov-support-form-section h3::before {
-  font-size: 20px;
-}
-
 .gov-support-section-location h3::before { content: "📍"; }
 .gov-support-section-land h3::before { content: "🌾"; }
 .gov-support-section-crop h3::before { content: "🌽"; }
@@ -143,6 +139,10 @@
   margin-bottom: 20px;
 }
 
+.gov-support-form-group:last-child {
+  margin-bottom: 0;
+}
+
 .gov-support-form-group label {
   display: block;
   margin-bottom: 8px;
@@ -152,7 +152,8 @@
 }
 
 .gov-support-form-group input,
-.gov-support-form-group select {
+.gov-support-form-group select,
+.gov-support-language-select {
   width: 100%;
   padding: 12px 16px;
   border: 2px solid #e0e0e0;
@@ -160,13 +161,22 @@
   font-size: 14px;
   transition: all 0.3s ease;
   background: white;
+  box-sizing: border-box;
 }
 
 .gov-support-form-group input:focus,
-.gov-support-form-group select:focus {
+.gov-support-form-group select:focus,
+.gov-support-language-select:focus {
   outline: none;
   border-color: #4a9e48;
   box-shadow: 0 0 0 3px rgba(74, 158, 72, 0.1);
+}
+
+.gov-support-form-group small {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-top: 5px;
 }
 
 /* Improved Land Size Section */
@@ -222,12 +232,14 @@
   height: 18px;
   accent-color: #4a9e48;
   margin: 0;
+  cursor: pointer;
 }
 
 .gov-support-land-type-label {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  cursor: pointer;
 }
 
 .gov-support-land-type-name {
@@ -252,6 +264,12 @@
   margin-bottom: 15px;
 }
 
+.gov-support-purpose-header h3 {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .gov-support-purpose-select-all {
   display: flex;
   align-items: center;
@@ -260,10 +278,15 @@
   color: #4a9e48;
   cursor: pointer;
   transition: all 0.3s ease;
+  user-select: none;
 }
 
 .gov-support-purpose-select-all:hover {
   color: #2c5f2d;
+}
+
+.gov-support-purpose-select-all input[type="checkbox"] {
+  cursor: pointer;
 }
 
 .gov-support-purpose-grid {
@@ -284,6 +307,7 @@
   align-items: center;
   gap: 10px;
   text-align: center;
+  position: relative;
 }
 
 .gov-support-purpose-card:hover {
@@ -309,6 +333,7 @@
   justify-content: center;
   font-size: 20px;
   color: #2c5f2d;
+  transition: all 0.3s ease;
 }
 
 .gov-support-purpose-card.selected .gov-support-purpose-icon {
@@ -340,6 +365,7 @@
   opacity: 0;
   width: 0;
   height: 0;
+  pointer-events: none;
 }
 
 .gov-support-purpose-stats {
@@ -408,11 +434,6 @@
   cursor: not-allowed;
 }
 
-.gov-support-submit-btn::before {
-  content: "🔍";
-  font-size: 18px;
-}
-
 /* Result Section */
 .gov-support-result-section {
   background: white;
@@ -431,7 +452,7 @@
 }
 
 .gov-support-result-header h2 {
-  margin: 0;
+  margin: 0 0 8px 0;
   font-size: 24px;
   font-weight: 600;
   display: flex;
@@ -442,6 +463,12 @@
 .gov-support-result-header h2::before {
   content: "📋";
   font-size: 28px;
+}
+
+.gov-support-result-header p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .gov-support-result-content {
@@ -500,6 +527,10 @@
 
 .gov-support-scheme-section {
   margin-bottom: 20px;
+}
+
+.gov-support-scheme-section:last-child {
+  margin-bottom: 0;
 }
 
 .gov-support-scheme-section h4 {
@@ -564,7 +595,6 @@
 
 /* Loading Animation */
 .gov-support-loading-spinner {
-  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -587,6 +617,13 @@
   100% { transform: rotate(360deg); }
 }
 
+.gov-support-loading-spinner p {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+}
+
 /* Error Message */
 .gov-support-error-message {
   grid-column: 1 / -1;
@@ -597,51 +634,6 @@
   border-radius: 8px;
   text-align: center;
   margin-top: 20px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .gov-support-modal {
-    width: 95%;
-    max-height: 95vh;
-  }
-  
-  .gov-support-modal-body {
-    padding: 20px;
-  }
-  
-  .gov-support-farmer-form {
-    grid-template-columns: 1fr;
-  }
-  
-  .gov-support-land-input-group {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .gov-support-land-type-group {
-    grid-template-columns: 1fr;
-  }
-  
-  .gov-support-purpose-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .gov-support-checkbox-group {
-    grid-template-columns: 1fr;
-  }
-  
-  .gov-support-result-content {
-    padding: 20px;
-  }
-  
-  .gov-support-result-actions {
-    flex-direction: column;
-  }
-  
-  .gov-support-scheme-body {
-    padding: 20px;
-  }
 }
 
 /* Markdown Styling */
@@ -678,4 +670,61 @@
 
 .gov-support-markdown-content p {
   margin: 0 0 15px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gov-support-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .gov-support-modal-body {
+    padding: 20px;
+  }
+  
+  .gov-support-farmer-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .gov-support-land-input-group {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .gov-support-land-type-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .gov-support-purpose-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gov-support-purpose-section {
+    grid-column: 1;
+  }
+  
+  .gov-support-checkbox-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .gov-support-result-content {
+    padding: 20px;
+  }
+  
+  .gov-support-result-actions {
+    flex-direction: column;
+  }
+  
+  .gov-support-scheme-body {
+    padding: 20px;
+  }
+
+  .gov-support-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .gov-support-result-header h2 {
+    font-size: 20px;
+  }
 }

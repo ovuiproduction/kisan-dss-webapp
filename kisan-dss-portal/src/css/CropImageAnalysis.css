@@ -254,8 +254,10 @@
 .crop-image-analysis-result {
   margin: 2rem;
   margin-top: 0;
-  width:50%;
+  width:60%;
   animation: slideUp 0.4s ease-out;
+  height:80vh;
+  overflow-y: auto;
 }
 
 @keyframes slideUp {
