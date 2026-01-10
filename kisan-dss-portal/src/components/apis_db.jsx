@@ -42,10 +42,8 @@ export const deleteCrop_api = async (cropId) => {
 
 export const sendMessage_api = async (userInput) => {
   try {
-    console.log("Sending message to API:");
     const ChatResponse = await axios.post(`${API_BASE_URL}/chat`, { userInput });
     let botMessage = ChatResponse.data.response;
-    console.log("Bot Message:", botMessage);
     return botMessage;
   } catch (error) {
     console.error("Error in sendMessage:", error);
@@ -381,7 +379,6 @@ export const getWeatherAdvisory = async () => {
     const response = await axios.get(`${API_BASE_URL}/get-weather-advisory`, {
       params: { userId },
     });
-    console.log(response.data);
     return response.data;
 
   } catch (error) {

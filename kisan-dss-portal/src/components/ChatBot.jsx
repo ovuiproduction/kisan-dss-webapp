@@ -75,7 +75,7 @@ const ChatBot = () => {
 
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      console.log("Transcript:", transcript);
+     
       setUserInput(transcript);
     };
 
@@ -157,8 +157,7 @@ const ChatBot = () => {
   };
 
   const fetchTransliteration = async (word, lang) => {
-    console.log("fetchTransliteration called with word:", word);
-    console.log("Current language:", lang);
+    
     // 🔴 Disable for English
     if (lang === "en-IN") {
       setShowSuggestions(false);
@@ -178,7 +177,7 @@ const ChatBot = () => {
     }
 
     try {
-      console.log("Fetching transliteration for:", word, "with itc:", itc);
+      
       const res = await axios.get("https://inputtools.google.com/request", {
         params: {
           text: word,
@@ -189,7 +188,7 @@ const ChatBot = () => {
 
       if (res.data[0] === "SUCCESS") {
         setSuggestions(res.data[1][0][1]);
-        console.log("Suggestions received:", res.data[1][0][1]);
+       
         setShowSuggestions(true);
       }
     } catch (err) {
@@ -218,7 +217,7 @@ const ChatBot = () => {
     if (word && cursorPos === end) {
       setSelectionPosition({ start, end });
       debouncedFetch(word, language);
-      console.log("Fetching suggestions for:", word);
+      
     } else {
       setShowSuggestions(false);
     }

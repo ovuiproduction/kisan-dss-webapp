@@ -70,7 +70,6 @@ export default function FarmerDashBoard() {
     try {
       const data = await intelDecisionBuilding_api(formData);
       setData(data);
-      console.log(responseData);
     } catch (err) {
       setError("Failed to build decision. Please try again.");
       console.error(err);
@@ -79,9 +78,6 @@ export default function FarmerDashBoard() {
     }
   };
 
-  useEffect(() => {
-    console.log("Loading state changed:", loading);
-  }, [loading]);
 
   const farmerAdminNavigation = () => {
     navigate("/home-farmer");
@@ -146,7 +142,6 @@ export default function FarmerDashBoard() {
     if (user.district === undefined) return;
     const payload = { city: user.district }; // or dynamic city
     const res = await IntelWeatherAdvisory_api(payload);
-    console.log("Weather Advisory:", res.weatherAdvisory);
     setWeatherAdvisory(res.weatherAdvisory);
     return res.weatherAdvisory;
   };
@@ -154,7 +149,6 @@ export default function FarmerDashBoard() {
   function getSafeParsedLocalStorage(key) {
     try {
       const value = localStorage.getItem(key);
-      console.log("Retrieved from localStorage:", value);
       return value ? JSON.parse(value) : null;
     } catch {
       return null;
