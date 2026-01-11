@@ -14,6 +14,8 @@ from flask_cors import CORS
 import time
 import concurrent.futures
 from googleapiclient.discovery import build
+from PIL import Image
+from io import BytesIO
 
 # load_dotenv()
 app = Flask(__name__)
@@ -48,9 +50,15 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key = API_KEY)
 geminimodel = genai.GenerativeModel("gemini-2.5-flash-lite")
 
+
 # fule data key
 DAILY_FUEL_DATA_KEY = os.getenv("DAILY_FUEL_DATA_KEY")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
+
+
+# Vision model load
+from vision_app import analyze_crop_image
+from daily_utility import farmer_scheme_recommendation
 
 # gemini request and response formating
 
@@ -1064,6 +1072,7 @@ def getResponseFromWeatherData(weather_data):
     advisory = response.text.strip()
     return advisory
 
+
 @app.route('/intel-weather-advisory', methods=['POST'])
 def getWeatherAdvisory():
     data = request.get_json()
@@ -1074,6 +1083,36 @@ def getWeatherAdvisory():
     advisory = getResponseFromWeatherData(weather_data_extracted)
     print(advisory)
     return jsonify({'weatherAdvisory': advisory})
+
+@app.route('/intel-crop-image-analysis', methods=['POST'])
+def getCropImageAnalysis():
+
+    if 'image' not in request.files:
+        return jsonify({"error": "Image file not found"}), 400
+
+    image_file = request.files['image']
+    language = request.form.get('language', 'Marathi')
+
+    # Read image directly
+    image_bytes = image_file.read()
+    image = Image.open(BytesIO(image_bytes))
+
+    analysis_result = analyze_crop_image(image, language)
+
+    return jsonify({'cropImageAnalysis': analysis_result})
+
+
+@app.route('/intel-gov-scheme-support', methods=['POST'])
+def govSchemesSupport():
+    data = request.get_json()
+    farmer_profile = data.get('farmer_profile')
+    print(farmer_profile)
+    language = data.get('language', 'Marathi')
+
+    scheme_recommendations = farmer_scheme_recommendation(farmer_profile,language)
+
+    return jsonify({'govSchemesSupport': scheme_recommendations})
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 7860))

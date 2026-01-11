@@ -1,0 +1,10 @@
+flask
+flask-cors
+requests
+scikit-learn==1.5.1
+pandas
+numpy
+python-dotenv
+google-generativeai
+gunicorn
+pillow
