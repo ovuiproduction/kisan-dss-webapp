@@ -147,13 +147,7 @@ export const intelCropImageAnalysis = async (formData) => {
     const response = await axios.post(
       `${API_BASE_URL}/intel-crop-image-analysis`,
       formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
     );
-    
     const data = response.data;
     return data;
   } catch (error) {

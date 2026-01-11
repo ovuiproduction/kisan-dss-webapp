@@ -1017,9 +1017,33 @@ footer {
 .left-side-block{
     position: fixed;
     bottom: 8rem;
-    right: 2rem;
-    z-index: 1000;
+    right: 1rem;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
+
+.leftbar-btn {
+    border-radius: 50%;
+    background-color: #4CAF50; /* Green color */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .leftbar-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  

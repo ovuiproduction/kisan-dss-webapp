@@ -470,7 +470,7 @@ export default function FarmerDashBoard() {
         <div className="left-side-block">
           <button
             onClick={handleCropImageAnalysis}
-            className="farmer-bot-btn"
+            className="leftbar-btn"
             title="Crop Image Analysis"
           >
             <i className="fa-solid fa-leaf"></i>
@@ -479,7 +479,7 @@ export default function FarmerDashBoard() {
           <button
             
             onClick={() => setGovSupport(!govSupport)}
-            className="farmer-bot-btn"
+            className="leftbar-btn"
             title="Government Schemes & Support"
           >
             <i  className="fa-solid fa-landmark"></i>

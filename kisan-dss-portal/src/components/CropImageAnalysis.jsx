@@ -1,6 +1,5 @@
 // src/components/CropImageAnalysis.jsx
 import React, { useState } from "react";
-import { uploadImage } from "./api/uploadImage";
 import { intelCropImageAnalysis } from "./apis_ml";
 import ReactMarkdown from "react-markdown";
 import "../css/CropImageAnalysis.css";
@@ -29,37 +28,33 @@ const CropImageAnalysis = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!imageFile) {
-      alert("Please upload an image");
-      return;
-    }
+  if (!imageFile) {
+    alert("Please upload an image");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      setResult(null);
+  try {
+    setLoading(true);
+    setResult(null);
 
-      // 🔹 STEP 1: Upload image to server
-      const imageUrl = await uploadImage(imageFile);
+    const formData = new FormData();
+    formData.append("image", imageFile);      // 🔹 image file
+    formData.append("language", language);    // 🔹 language
 
-      // 🔹 STEP 2: Send image URL + language
-      const payload = {
-        image_url: imageUrl,
-        language: language,
-      };
+    const analysisResult = await intelCropImageAnalysis(formData);
+    setResult(analysisResult);
 
-      const analysisResult = await intelCropImageAnalysis(payload);
-      setResult(analysisResult);
+  } catch (err) {
+    alert("Image analysis failed: " + err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    } catch (err) {
-      alert("Image analysis failed: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Format the result for ReactMarkdown
+  
+  
   const formatResult = () => {
     if (!result) return "";
     
