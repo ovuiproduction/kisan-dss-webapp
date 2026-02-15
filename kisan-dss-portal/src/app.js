@@ -25,13 +25,14 @@ import MyOrders from "./components/MyOrders";
 // import IntelCropRec from "./components/IntelCropRec";
 import IntelCropRecResult from "./components/IntelCropRecResult";
 
-import IntelGovScheme from "./components/IntelGovScheme";
 import IntelCultivationGuide from "./components/IntelCultivationGuide";
 import IntelCultivationPractices from "./components/IntelCultivationPractices";
 
 
 import IntelCropImageAnalysis from "./components/CropImageAnalysis";
 import GovSupport from "./components/GovSupport";
+
+import CreateInstance from "./components/createInstance";
 
 export default function App() {
   return (
@@ -56,8 +57,7 @@ export default function App() {
 
         {/* <Route path="/intel-crop-recommendation" element={<IntelCropRec />} /> */}
         <Route path="/intel-crop-rec-result" element={<IntelCropRecResult />} />
-
-        <Route path="/intel-goverment-scheme" element={<IntelGovScheme />} />
+        
         <Route path="/intel-cultivation-guide" element={<IntelCultivationGuide />} />
         <Route path="/intel-cultivation-practices" element={<IntelCultivationPractices />} />
         
@@ -82,6 +82,8 @@ export default function App() {
 
         <Route path="/home-user/mycart" element={<MyCart />} />
         <Route path="/home-user/orderhistory" element={<MyOrders />} />
+
+        <Route path="/create-instance" element={<CreateInstance />} />
       </Routes>
     </Router>
   );

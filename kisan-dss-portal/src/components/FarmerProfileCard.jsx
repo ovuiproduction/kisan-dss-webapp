@@ -1,23 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState,useEffect, useRef } from "react";
+import UpdateProfile from "./updateProfile"; 
 
 export default function FarmerProfileCard({ onClose }) {
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const user = JSON.parse(sessionStorage.getItem("user")) || {};
     const cardRef = useRef(null);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (cardRef.current && !cardRef.current.contains(event.target)) {
-                onClose();
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [onClose]);
-
     return (
+        <>
         <div className="profile-card-backdrop">
             <div className="aadhaar-profile-card" ref={cardRef}>
                 {/* Card Header */}
@@ -74,8 +64,24 @@ export default function FarmerProfileCard({ onClose }) {
                     <div className="aadhaar-number">
                         अन्नदाता सुखी भव
                     </div>
+                    <button 
+                            className="update-profile-btn"
+                            onClick={() => setIsUpdateModalOpen(true)}
+                        >
+                            ✎ Update Profile
+                        </button>
                 </div>
             </div>
         </div>
+        
+         <UpdateProfile 
+                isOpen={isUpdateModalOpen}
+                onClose={() => setIsUpdateModalOpen(false)}
+                onSuccess={() => {
+                    // Refresh user data in sessionStorage if needed
+                    setIsUpdateModalOpen(false);
+                }}
+            />
+            </>
     );
 }

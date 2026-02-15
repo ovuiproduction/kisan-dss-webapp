@@ -93,6 +93,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
             onChange={handleInputChange}
             onKeyDown={handleKeyPress} // Listen for Enter key press
             placeholder="Enter crop name and press Enter"
+            required
           />
           <datalist id="crop_list">
             <option value="Jowar">Jowar</option>
@@ -114,6 +115,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   onChange={(e) => setYear(e.target.value)}
                   placeholder="Enter year"
                   min="1"
+                  required
                 />
               </div>
 
@@ -123,6 +125,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   className="intel-price-input"
                   value={month}
                   onChange={(e) => setMonth(e.target.value)}
+                  required
                 >
                   <option value="">Select Month</option>
                   <option value="1">1 - January</option>
@@ -145,6 +148,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                 <select
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
+                  required
                 >
                   <option value="">Select District</option>
                   <option value="Kolhapur">Kolhapur</option>
@@ -164,6 +168,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   placeholder="Enter Area in hectare"
                   min="0"
                   step="0.01"
+                  required
                 />
               </div>
               <div className="yield-formcontent">
@@ -174,6 +179,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   className="intel-price-input"
                   value={soilColor}
                   onChange={(e) => setSoilColor(e.target.value)}
+                  required
                 >
                   <option value="">Select Soil Color</option>
                   <option value="Medium Brown">Medium Brown</option>
@@ -191,6 +197,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   name="fertilizer"
                   value={fertilizer}
                   onChange={(e) => setFertilizer(e.target.value)}
+                  required
                 >
                   <option value="">Select Fertilizer</option>
                   <option value="Urea">Urea</option>
@@ -219,6 +226,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   placeholder="Enter Nitrogen"
                   min="0"
                   step="0.01"
+                   required
                 />
               </div>
               <div className="yield-formcontent">
@@ -231,6 +239,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   placeholder="Enter Phosphorus"
                   min="0"
                   step="0.01"
+                   required
                 />
               </div>
               <div className="yield-formcontent">
@@ -243,6 +252,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   placeholder="Enter Potassium"
                   min="0"
                   step="0.01"
+                   required
                 />
               </div>
               <div className="yield-formcontent">
@@ -256,6 +266,7 @@ export default function IntelCropRecommendationForm({ setIntelCropRecommendation
                   step="0.01"
                   value={pH}
                   onChange={(e) => setPH(e.target.value)}
+                   required
                 />
               </div>
             </div>

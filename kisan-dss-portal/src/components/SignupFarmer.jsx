@@ -97,8 +97,7 @@ export default function SignupFarmer({setIsLogin}) {
               />
             </div>
           </div>
-         
-
+        
           <button type="submit">Sign Up</button>
         </form>
         <p>

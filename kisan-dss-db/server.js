@@ -5,11 +5,14 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const Mailjet = require("node-mailjet");
-
 const farmerscoll = require("./models/farmer");
 const userscoll = require("./models/user");
 const cropcolls = require("./models/crop");
 
+// Routes
+
+const instanceRoutes = require("./routes/instanceRoutes");
+const logRoutes = require("./routes/LogRoutes");
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || "your_secret_key";
@@ -24,6 +27,7 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+
 
 const port = 4000;
 
@@ -62,6 +66,14 @@ const sendMail = async (mailOptions) => {
       console.log(err.statusCode);
     });
 };
+
+// imports
+const runChat = require("./utility/llm_utility");
+
+// Routes
+
+app.use("/instance", instanceRoutes);
+app.use('/logs', logRoutes);
 
 app.get("/", (req, res) => {
   res.send(
@@ -118,6 +130,62 @@ app.post("/signup-user", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+app.put("/farmer/update-profile", async (req, res) => {
+  try {
+    const {
+      email,
+      village,
+      landSize,
+      irrigationType,
+      soilType,
+      nitrogen,
+      phosphorus,
+      potassium,
+      ph,
+      organicCarbon,
+    } = req.body;
+
+    const farmer = await farmerscoll.findOne({ email });
+    if (!farmer) {
+      return res.status(404).json({ message: "Farmer not found" });
+    }
+
+    // Update permanent farm details
+    farmer.village = village;
+    farmer.landSize = landSize;
+    farmer.irrigationType = irrigationType;
+    farmer.soilType = soilType;
+
+    farmer.soilHealth = {
+      nitrogen,
+      phosphorus,
+      potassium,
+      ph,
+      organicCarbon
+    };
+
+    await farmer.save();
+
+    res.json({ message: "Profile updated successfully" });
+  } catch (err) {
+    console.error("Update Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get("/farmer-profile", async (req, res) => {  
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+  try {
+    const farmer = await farmerscoll.findOne({ email });
+    if (!farmer) return res.status(404).json({ error: "Farmer not found" });
+    res.json(farmer);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 // Generate Random 6-Digit OTP
 const generateOTP = () =>
@@ -176,6 +244,7 @@ app.post("/verify-otp-user", async (req, res) => {
       secretKey,
       { expiresIn: "1h" }
     );
+
 
     res.json({ message: "Login successful", token, user });
   } catch (err) {
@@ -286,7 +355,7 @@ app.post("/postcrop", async (req, res) => {
       image,
     } = req.body;
 
-    console.log(farmerId);
+    
     const farmer = await farmerscoll.findById(farmerId);
     if (!farmer) {
       return res.status(400).json({
@@ -359,7 +428,6 @@ app.get("/active-crops", async (req, res) => {
       } // Select only required fields
     );
 
-    console.log("Fetched Crops:", crops);
     res.json(crops); // Directly send the crops with Base64 image
   } catch (error) {
     console.error("Error fetching active crops:", error);
@@ -370,8 +438,7 @@ app.get("/active-crops", async (req, res) => {
 app.delete("/delete-crop/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Deleting crop with ID:", id);
-
+   
     const deletedCrop = await cropcolls.findByIdAndDelete(id);
 
     if (!deletedCrop) {
@@ -387,7 +454,7 @@ app.delete("/delete-crop/:id", async (req, res) => {
 
 app.get("/history-crops", async (req, res) => {
   try {
-    console.log("history crops request arrived");
+  
     const { email } = req.query; // Extract email from query params
 
     if (!email) {
@@ -407,7 +474,7 @@ app.get("/history-crops", async (req, res) => {
       } // Select only required fields
     );
 
-    console.log("Fetched Crops:", crops);
+  
     res.json(crops); // Directly send the crops with Base64 image
   } catch (error) {
     console.error("Error fetching active crops:", error);
@@ -418,8 +485,7 @@ app.get("/history-crops", async (req, res) => {
 app.get("/api/farmers/:farmerId/transactions", async (req, res) => {
   try {
     const { farmerId } = req.params;
-    console.log("Received request for farmer ID:", farmerId);
-
+   
     if (!mongoose.Types.ObjectId.isValid(farmerId)) {
       console.error("Invalid Farmer ID format:", farmerId);
       return res.status(400).json({ message: "Invalid Farmer ID format" });
@@ -440,7 +506,6 @@ app.get("/api/farmers/:farmerId/transactions", async (req, res) => {
       transactionDate: txn.date ? new Date(txn.date).toISOString() : "N/A", // Ensure proper date format
     }));
 
-    console.log("Formatted Transactions:", transactions);
     res.json({ transactions });
   } catch (error) {
     console.error("Server error:", error);
@@ -505,12 +570,12 @@ app.post("/add-to-cart", async (req, res) => {
 
 app.get("/cart", async (req, res) => {
   try {
-    console.log("Cart fetch request arrived");
+   
     const { userId } = req.query;
     const user = await userscoll.findById(userId).populate("cart.productId");
 
     if (!user) return res.status(404).json({ message: "User not found" });
-    // console.log(user.cart);
+
     res.json(user.cart);
   } catch (error) {
     res.status(500).json({ message: "Error fetching cart items", error });
@@ -537,15 +602,13 @@ app.delete("/cart/remove", async (req, res) => {
 });
 
 app.post("/cart/buy", async (req, res) => {
-  console.log("Before try in buy");
+ 
   try {
     const { userId, productId, rating } = req.body;
-    console.log("Buy request arrived, rating received:", rating);
-
+   
     // Fetch user and populate cart items
     const user = await userscoll.findById(userId).populate("cart.productId");
     if (!user) {
-      console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
     // console.log("User found:", user);
@@ -569,9 +632,7 @@ app.post("/cart/buy", async (req, res) => {
         }`,
       });
     }
-    // console.log("Crop found:", crop);
-    console.log("Farmer ID from crop:", crop?.farmerId);
-
+   
     // Calculate price and update stock
     const amountPaid = cartItem.quantity * crop.price_per_kg;
     crop.quantity -= cartItem.quantity;
@@ -723,74 +784,7 @@ app.get("/api/users/:userId/transactions", async (req, res) => {
   }
 });
 
-const {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} = require("@google/generative-ai");
 
-async function runChat(userInput) {
-  try {
-    const genAI = new GoogleGenerativeAI(process.env.API_KEY); // or replace with your actual API_KEY string
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-lite",
-      generationConfig: {
-        temperature: 0.9,
-        topK: 1,
-        topP: 1,
-        maxOutputTokens: 1000,
-      },
-      safetySettings: [
-        {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-      ],
-    });
-
-    // Create a chat session with system instruction
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `
-You are AgriBot, an advanced agriculture assistant specializing in market intelligence, crop insights, and direct market access for farmers in Maharashtra.
-
-Focus only on:
-1. APMC crop prices from Agmarknet.
-2. Top crops grown in districts.
-3. Profitable crop suggestions based on region.
-4. Crop selling guidance.
-5. Crop-specific advisory.
-
-Ignore all unrelated topics. Default to Maharashtra unless a different state is mentioned.
-`,
-            },
-          ],
-        },
-        {
-          role: "model",
-          parts: [
-            {
-              text: "Hello! I'm AgriBot, your agriculture assistant. How can I help you today?",
-            },
-          ],
-        },
-      ],
-    });
-
-    const result = await chat.sendMessage(userInput);
-    const response = result.response;
-    console.log("AI chatbot response:", response.text());
-    return response.text();
-  } catch (error) {
-    console.error("Error in AI chatbot:", error);
-    return "Sorry, I couldn't process your request.";
-  }
-}
 
 // ✅ API: Chatbot with Multilingual Support
 app.post("/chat", async (req, res) => {
@@ -871,8 +865,17 @@ app.get("/get-weather-advisory", async (req, res) => {
   }
 });
 
+app.get("/authorization/get_user_id", async (req, res) => {
+  try {
+    const user = JSON.parse(localStorage.getItem("authenticated_user"));
+    res.status(200).json({ user: user });
+  } catch (error) {
+    console.error("Error fetching user ID:", error);
+    res.status(500).json({ message: "Error fetching user ID", error });
+  }
+});
+
+
 app.listen(port, () => {
-  console.log(
-    `This is the backend server for Kisan-DSS application. Manages farmers, users, and crops efficiently!`
-  );
+  console.log(`Kisan-DSS DB server running at http://localhost:${port}`);
 });

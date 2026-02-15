@@ -4,20 +4,39 @@ import "../static/css/intel-crop-rec-result.css";
 
 // Import Chart.js components
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 export default function IntelCropRecResult() {
   const location = useLocation();
   const { state } = location;
 
-  console.log(state); // Debugging
+  console.log("Received state:", state);
 
   // Extract data for the chart
   const commodities = state?.data ? Object.keys(state.data) : [];
-  const totalPrices = state?.data ? Object.values(state.data).map(item => item.totalPrice) : [];
+  const totalPrices = state?.data
+    ? Object.values(state.data).map((item) => item.totalPrice)
+    : [];
 
   // Chart.js Data
   const chartData = {
@@ -89,18 +108,31 @@ export default function IntelCropRecResult() {
                   <th scope="col">Expected Yield (Quintal/hec)</th>
                   <th scope="col">Your Area (hec)</th>
                   <th scope="col">Expected Total Price (₹)</th>
+                  <th scope="col">Expected Expenditure (₹)</th>
+                  <th scope="col">Expected Profit (₹)</th>
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(state.data).map(([commodity, data]) => (
-                  <tr key={commodity}>
-                    <th scope="row">{commodity}</th>
-                    <td>{data.predicted_price}</td>
-                    <td>{data.predicted_yield}</td>
-                    <td>{data.area}</td>
-                    <td>{data.totalPrice}</td>
-                  </tr>
-                ))}
+                {Object.entries(state.data).map(([commodity, data]) => {
+                  // Find the matching expenditure object for the current commodity
+                  const expenditureItem = state.expenditureData?.find(
+                    (item) => item.crop === commodity,
+                  );
+                  const expenditure = expenditureItem?.cost || 0;
+                  const profit = data.totalPrice - expenditure;
+
+                  return (
+                    <tr key={commodity}>
+                      <th scope="row">{commodity}</th>
+                      <td>{data.predicted_price}</td>
+                      <td>{data.predicted_yield}</td>
+                      <td>{data.area}</td>
+                      <td>{data.totalPrice}</td>
+                      <td>{expenditure}</td>
+                      <td>{profit.toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

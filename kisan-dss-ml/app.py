@@ -1,23 +1,16 @@
-from flask import Flask,request, render_template,jsonify,request
-import datetime
+from flask import Flask,request,jsonify,g
 import requests
 import pickle
 import pandas as pd
 import os
 from dotenv import load_dotenv
-import numpy as np
-import json
-import google.generativeai as genai
-import re
 import random
 from flask_cors import CORS
-import time
 import concurrent.futures
-from googleapiclient.discovery import build
 from PIL import Image
 from io import BytesIO
+import jwt
 
-# load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
@@ -45,69 +38,27 @@ try:
 except FileNotFoundError as e:
     raise FileNotFoundError(f"Required file missing: {e}")
 
-# gemini configuration
-API_KEY = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key = API_KEY)
-geminimodel = genai.GenerativeModel("gemini-2.5-flash-lite")
-
-
 # fule data key
 DAILY_FUEL_DATA_KEY = os.getenv("DAILY_FUEL_DATA_KEY")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 
 
 # Vision model load
-from vision_app import analyze_crop_image
-from daily_utility import farmer_scheme_recommendation
+from llm_utility import analyze_crop_image
+from llm_utility import farmer_scheme_recommendation
+from llm_utility import getCropSelectionConclusion
+from llm_utility import getMarketSelectionConclusion
+from llm_utility import getMahaAnnualRainfall
+from llm_utility import getIndiaRainfallMonthly
+from llm_utility import getSellingDecision
+from llm_utility import getCultivationPracticeGuide
+from llm_utility import getActionableWeatherAdvisory
+from llm_utility import getPestManagementAdvisory
+from llm_utility import getFertilizerAdvisory
+from llm_utility import getYieldPrediction
+from llm_utility import getCropPlanManager
+from llm_utility import getExpenditurePrediction
 
-# gemini request and response formating
-
-def gemini_response(Prompt):
-    response = geminimodel.generate_content(Prompt)
-    return response
-
-def get_data(Prompt):
-    response = gemini_response(Prompt)
-    if not response or not response.text:  
-        print("Error: Empty response from the model.")
-        return None  
-
-    try:
-        json_string = response.text.strip()
-        
-        # Extract JSON content using a more robust regex
-        json_match = re.search(r"\{.*\}", json_string, re.DOTALL)
-        
-        if not json_match:
-            print("Error: No valid JSON found in response.")
-            return None
-        
-        json_data = json.loads(json_match.group())  
-        return json_data
-
-    except json.JSONDecodeError as e:
-        print("Error parsing JSON:", e)
-        return None
-    except Exception as e:
-        print("Error:", e)
-        return None
-
-def get_response(Prompt):
-    response = gemini_response(Prompt)
-    try:
-        json_string = response.text.strip()
-        json_string = re.sub(r"```(?:json)?\s*", "", json_string)
-        json_string = re.sub(r"```", "", json_string)
-        json_data = json.loads(json_string)
-        print(json_data)
-        return json_data
-    
-    except json.JSONDecodeError as e:
-        print("Error parsing JSON:", e)
-        return None
-    except Exception as e:
-        print("Error:", e)
-        return None
 
 # Crop MSP and Average Price Dictionary (Prices in INR per Quintal)
 commodity_price = {
@@ -184,148 +135,7 @@ def get_subdistrict(market):
     return market 
 
 
-
-##### Gemini Model Prompt
-
-def getCropSelectionConclusion(IntelCropData,Nitrogen,Potassium,Phosphorus,soilColor,pH):
-    Prompt = f"""
-        You are an expert in crop selection. I will provide you with data that includes:
-        The expected total price and yield for various crops.
-        Meteorological and soil data relevant to crop growth.
-        Based on this data, suggest the most profitable crop that is also suitable for the given soil conditions.
-        
-        Price and yield data : {IntelCropData},
-        Nitrogen : {Nitrogen},
-        Potassium : {Potassium},
-        Phosphorus : {Phosphorus},
-        soilColor : {soilColor},
-        pH : {pH}
-        
-        Output Format: JSON
-        suggested_crop
-        reasoning
-        
-        In output only suggested crop and reasoning no any desclaimers or voage statements.
-    """
-    data = get_data(Prompt)
-    return data
-
-# Market price prediction
-def getMahaAnnualRainfall(year, district):
-    prompt = f"""Based on historical rainfall data and climatic patterns in Maharashtra, 
-                predict the **annual rainfall** for the year {year} in the district of {district}.
-                
-                - Use previous rainfall data trends for the district and Maharashtra state to make the prediction.
-                - Consider typical rainfall ranges:
-                    - **January to May**: Typically dry, with rainfall between **0 mm to 100 mm**.
-                    - **June to September (Monsoon Season)**: Heavy rainfall, ranging from **500 mm to 1500 mm**, with the peak usually in **July**.
-                    - **October to December**: Moderate rainfall, between **50 mm to 300 mm**.
-                - Output the **annual rainfall in millimeters (mm)**.
-                - Ensure the rainfall value is realistic and falls within the typical ranges for the region.
-                - Provide only the **rainfall value** in **JSON format**, without any explanation or additional text.
-                
-                ### Expected output format:
-                {{ "rainfall": 750.5 }}
-                
-                - The rainfall value should be a **positive floating-point number** (e.g., 1200.5) representing millimeters (mm).
-                - Example: 
-                {{ "rainfall": 850.2 }}
-                """
-    rainfall = get_data(prompt)
-    return rainfall['rainfall']
-
-# WPI prediction
-def getIndiaRainfallMonthly(year, month):
-    prompt = f"""Analyze historical rainfall patterns in India and predict the expected rainfall 
-                for the year {year} and month {month}. Base your prediction on past trends 
-                and ensure the value aligns with India's typical rainfall range.
-                
-                - The normal range for India's monthly rainfall varies between **10 mm to 400 mm**,
-                  except in extreme monsoon months (June-September), where it can reach **800 mm max**.  
-                - Ensure the prediction reflects realistic values based on IMD historical data.  
-                  
-                The response should only contain a **valid JSON object** with the following format:
-                {{ "rainfall": <number> }} 
-                
-                ### Example output format:  
-                {{ "rainfall": 154.5 }}  
-                """
-    rainfall = get_data(prompt)
-    return rainfall['rainfall']
-
-# market selection guide
-def getMarketSelectionConclusion(MarketData,cropyield,transportation_data,sourceDistrict):
-    Prompt = f"""
-            You are expert in market selection i will provide you the market and the crop prices in that market.
-            your job is to guide the farmer to decide the market which gives highest profit.
-            On the basis of crop price in that market and the transportation cost required to reach that market.
-            Total net Profit = (cropyield * marketprice) - trasportationcost
-            so you need to use this equation to get the net profit. 
-            According to this net profit suggest the market that provide max profit.
-            
-            cropyield : {cropyield}
-            marketData : {MarketData}
-            transportationData : {transportation_data}
-            sourceDistrict : {sourceDistrict}
-            
-            output format : JSON
-            suggested_market : <market> <price in that market> ₹/Qtl
-            reasoning : explain why and how the suggested market gives the max profit.
-            
-            In output no any desclaimers or voage statements. in output Do not return marketData or transprotation data just return suggested_market reasoning.
-            output must be in json format.
-    """
-    data = get_data(Prompt)
-    return data
-
-# guide for which option to choose
-def getSellingDecision(Commodity,highestLocalMarketPrice,localMarketName,districtName,govMarketPrice,storageAvailability):
-    prompt = f"""
-            Assume that you are the farmer guide , guiding farmer to sell their product. now for farmer he have a three choices to sell their product 
-            
-            1. goverment market
-            2. Local Market
-            3. Direct selling to customers
-            
-            now I will provide you the prices in goverment markets , local markets and if farmer choose third option then it is sure that it will get the max profit. as in markets the prices are decided by middle man but in third option price is decided by farmer himself.but for third option problem is storage , if farmer go for third option then he should have the storage Avalability. so always third option is not max profitable you also need to consider the commodity as some commodities cannot stored for long time so in that case 3rd option is not helpful.So consider all possibilites and guide the farmer.
-            
-            ### Data
-            Commodity : {Commodity}
-            highestLocalMarketPrice : {highestLocalMarketPrice} ,
-            Local Market Name where price is highest :{ localMarketName} ,
-            District of local Market Where price is highest : {districtName}
-            govMarketPriceMax : {govMarketPrice[1]} ,
-            govMarketPriceMin : {govMarketPrice[0]} ,
-            govMarketPriceAvg : {govMarketPrice[2]} ,
-            storageAvailability : {storageAvailability}
-            
-            Your task to analyze the all data and guide the farmer which path he/she should choose and why with the price details you need to convince the farmer to choose the correct path that gives max profit.
-            
-            ### decision format :
-            if local market specify which market and the corresponding price 
-            ex. Local Market (<district>,<market name>, <price> ₹ per Quintal)
-            
-            if goverment market then
-            ex. APMC Market (Price : <highest price> ₹ per Quintal)
-            
-            if Direct sell to customer
-            then only Direct Sell to Customer
-            
-            ### reasoning
-            reasoning for the given decision.
-            
-            ## Do NOT include disclaimers or vague statements.  .
-            
-            return ans in json format.
-            """
-    
-    data = get_data(prompt)
-    return data
-
-
-
 #### Models In Use
-
 
 # division wise
 # Rainfall year prediction
@@ -359,7 +169,6 @@ def getRainfallValue(year, month):
     except Exception as e:
         print(f"Error processing rainfall data for year {year}, month {month}: {e}")
         return None
-
 
 def marketPricePrediction(District, Market, Commodity, Year, Month, Rainfall):
     try:
@@ -407,7 +216,6 @@ def getMarketPriceData(Commodity, Year, Month):
         print(f"Error generating market price data for {Commodity} in {Year}-{Month}: {e}")
         return {}
 
-
 def wpiPrediction(Commodity, Month, Year, Rainfall):
     try:
         column_names = ['Commodity', 'Month', 'Year', 'Rainfall']
@@ -429,7 +237,7 @@ def wpiPricePrediction(Commodity, Month, Year, Rainfall):
         min_wpi_price = round((wpi * commodity_avg_price) / 100, 2)
         max_wpi_price = round((wpi * commodity_msp_price) / 100, 2)
         avg_wpi_price = round((min_wpi_price + max_wpi_price) / 2, 2)
-        return min_wpi_price, max_wpi_price, avg_wpi_price
+        return min_wpi_price, avg_wpi_price, max_wpi_price
     except KeyError as e:
         print(f"Error: Missing data for {Commodity} in commodity_price dictionary: {e}")
         return None, None, None
@@ -445,7 +253,7 @@ def wpiPriceWholeYear(Commodity, Year):
         rainfallData = getRainfallDataYearSeries(Year)
         x_count = 0
         for rainfall in rainfallData:
-            min_wpi_price, max_wpi_price, avg_wpi_price = wpiPricePrediction(Commodity, Month, Year, rainfall)
+            min_wpi_price,avg_wpi_price,max_wpi_price = wpiPricePrediction(Commodity, Month, Year, rainfall)
             msp_data.append(max_wpi_price)
             min_price_data.append(min_wpi_price)
             Month = Month + 1
@@ -454,7 +262,6 @@ def wpiPriceWholeYear(Commodity, Year):
     except Exception as e:
         print(f"Error predicting WPI prices for {Commodity} in {Year}: {e}")
         return [], []
-    
 
 def getTempretureData(year):
     months = random.sample(range(1, 13), 6)
@@ -474,7 +281,6 @@ def getTempretureData(year):
    
     return aggregated_temperature
 
-
 def yieldPrediction(Year, District, Commodity, Area, Rainfall, Temperature, Soil_color, Fertilizer, Nitrogen, Phosphorus, Potassium, pH):
     column_names = ['Year', 'District', 'Commodity', 'Area', 'Rainfall', 'Temperature','Soil_color','Fertilizer', 'Nitrogen', 'Phosphorus', 'Potassium', 'pH']
     features = [[Year, District, Commodity, Area, Rainfall, Temperature, Soil_color, Fertilizer, Nitrogen, Phosphorus, Potassium, pH]]
@@ -491,7 +297,7 @@ def getIntelCropData(Commoditys, Year, Month, District, Area, Nitrogen, Potassiu
     IntelCroprecData = {}
 
     for Commodity in Commoditys:
-        min_wpi_price, max_wpi_price, predicted_price = wpiPricePrediction(Commodity, Month, Year, wpi_Rainfall)
+        min_wpi_price, predicted_price, max_wpi_price = wpiPricePrediction(Commodity, Month, Year, wpi_Rainfall)
         predicted_yield = yieldPrediction(Year, District, Commodity, Area, Rainfall, Temperature, soilColor, Fertilizer, Nitrogen, Phosphorus, Potassium, pH)
         totalPrice = round((predicted_yield*Area*predicted_price), 2)
         
@@ -504,6 +310,8 @@ def getIntelCropData(Commoditys, Year, Month, District, Area, Nitrogen, Potassiu
         }
     return IntelCroprecData
 
+
+#### Transportation Distance and Cost Calculation with Caching
 
 coordinate_cache = {}
 
@@ -600,7 +408,6 @@ def calculate_osrm_distance(source_coords, destination_coords):
         print(f"Unexpected error: {e}")
         return None
 
-
 # Dictionary to store cached fuel prices
 fuel_price_cache = {}
 
@@ -637,7 +444,6 @@ def get_fuel_prices_for_district(district):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return None
-
 
 def calculateTransportationDistance(coords_source, fuel_prices, des_district, mileage):
     transportation_data_all = {}
@@ -714,8 +520,38 @@ def getTransportationData(src_subdistrict, src_district, des_district, mileage):
     return transportation_data_all, transportation_data
 
 
-##### Routes 
+#### Functions for Weather Data and Advisory
 
+def fetch_weather_data(city,country):
+    api_key = OPENWEATHER_API_KEY
+    base_url = "http://api.openweathermap.org/data/2.5/forecast/hourly"
+    complete_url = f"{base_url}?q={city},{country}&appid={api_key}&units=metric"
+    response = requests.get(complete_url)
+    weather_data = response.json()
+    return weather_data
+
+def extract_agri_weather_info(weather_data):
+    important_info = []
+    for entry in weather_data.get("list", []):
+        rain = entry.get("rain", {})
+        rain_mm = rain.get("1h") or rain.get("3h") or 0
+        
+        info = {
+            "datetime": entry.get("dt_txt"),
+            "rain_mm": rain_mm,
+            "pop": entry.get("pop", 0),
+            "temp": entry["main"].get("temp"),
+            "humidity": entry["main"].get("humidity"),
+            "wind_speed": entry["wind"].get("speed"),
+            "description": entry["weather"][0].get("description"),
+            "clouds": entry.get("clouds", {}).get("all", 0)
+        }
+
+        important_info.append(info)
+    return important_info
+
+
+##### Routes 
 
 @app.route('/')
 def index():
@@ -723,14 +559,25 @@ def index():
         "message": "Kisan DSS API Server",
         "status": "running",
         "platform": "Hugging Face Spaces",
-        "endpoints": [
-            "/intel-market-price",
-            "/intel-wpi-price", 
-            "/intel-build-decision",
-            "/intel-crop-recommendation",
-            "/intel-gov-scheme"
-        ]
     })
+
+
+SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
+
+@app.before_request
+def extract_user():
+    auth_header = request.headers.get("Authorization")
+
+    g.user_id = "default_user"   # fallback
+
+    if auth_header:
+        try:
+            token = auth_header.split(" ")[1]
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            g.user_id = decoded.get("userId", "default_user")
+        except:
+            pass
+
 
 @app.route('/intel-market-price', methods=['POST'])
 def marketPrice():
@@ -807,7 +654,7 @@ def IntelWPI():
                 return jsonify({"error": "Failed to get rainfall data"}), 500
 
             # Get WPI price prediction
-            avgPrice, minPrice, maxPrice = wpiPricePrediction(Commodity, Month, Year, Rainfall)
+            minPrice,avgPrice,maxPrice = wpiPricePrediction(Commodity, Month, Year, Rainfall)
             if avgPrice is None or minPrice is None or maxPrice is None:
                 return jsonify({"error": "Failed to predict WPI prices"}), 500
 
@@ -817,13 +664,12 @@ def IntelWPI():
 
             # Calculate max and min prices
             maxMSPPrice = max(maxPriceCurrSeries)
-            maxAvgPrice = max(minPriceCurrSeries)
-            minMSPPrice = min(maxPriceCurrSeries)
+            minMSPPrice = max(minPriceCurrSeries)
+            maxAvgPrice = min(maxPriceCurrSeries)
             minAvgPrice = min(minPriceCurrSeries)
-
             # Find gold and silver month indexes
             goldMonthIndex = maxPriceCurrSeries.index(maxMSPPrice) + 1
-            silverMonthIndex = maxPriceCurrSeries.index(minMSPPrice) + 1
+            silverMonthIndex = minPriceCurrSeries.index(minAvgPrice) + 1
 
             # Return the response
             return jsonify({
@@ -942,135 +788,18 @@ def IntelCropRec():
             return jsonify({"error": "Invalid input format for numbers"}), 400
 
         IntelCropData = getIntelCropData(Commoditys,Year,Month,District,Area,Nitrogen,Potassium,Phosphorus,Fertilizer,soilColor,pH)
-        conclusion = getCropSelectionConclusion(IntelCropData,Nitrogen,Potassium,Phosphorus,soilColor,pH)
-        return jsonify({'data':IntelCropData,'conclusion':conclusion})
+        IntelExpenditureData = getExpenditurePrediction(crops=Commoditys,area=Area,fertilizer=Fertilizer,district=District)
+        conclusion = getCropSelectionConclusion(IntelCropData,IntelExpenditureData,Nitrogen,Potassium,Phosphorus,soilColor,pH)
+        return jsonify({'data':IntelCropData,'expenditureData':IntelExpenditureData,'conclusion':conclusion})
      
-@app.route('/intel-gov-scheme', methods=['POST'])   
-def getGovSchemeData():
-    data = request.get_json()
-    commodity = data.get('commodity')
-    Prompt = f"""Provide information about 3 Indian government schemes related to {commodity} farming in JSON format. The JSON should be an array of objects. Each object should have the following keys: 'scheme_name', 'purpose', and 'benefits' (which should be an array of strings). do not write the disclaimer or extra information only json data of goverment scheme in specified format"""
-    goverment_data = get_response(Prompt)
-    return jsonify({'govSchemeData':goverment_data})
 
 @app.route('/intel-cultivation-practices', methods=['POST'])   
 def getCultivationPractices():
     data = request.get_json()
-    commodity = data.get('query')
+    crop = data.get('query')
     language = data.get('language', 'English')
-    
-    Prompt = f"""
-        Provide recommended cultivation practices for {commodity} farming in India.
-        # Output language : {language}
-        Return output strictly in JSON format with keys:
-        {{
-            "crop": "{commodity}",
-            "cultivation_practices": [
-                {{
-                "stage": "Stage name",
-                "description": "Explanation"
-                }}
-            ],
-            "recommended_youtube_videos": [
-                {{
-                "title": "Video title",
-                "channel": "Channel name",
-                "url": "Video URL"
-                }}
-            ]
-            }}
-
-        Guidelines:
-        1. Give practices specific to {commodity}.
-        2. Include 3-5 YouTube video links validated to be relevant to {commodity} farming.
-        3. Do NOT add any text outside JSON. No disclaimers.
-        """
-
-    cultivation_data = get_response(Prompt)
+    cultivation_data = getCultivationPracticeGuide(crop,language)
     return jsonify({'cultivationPractices': cultivation_data})
-
-
-def fetch_weather_data(city,country):
-    api_key = OPENWEATHER_API_KEY
-    base_url = "http://api.openweathermap.org/data/2.5/forecast/hourly"
-    complete_url = f"{base_url}?q={city},{country}&appid={api_key}&units=metric"
-    response = requests.get(complete_url)
-    weather_data = response.json()
-    return weather_data
-
-def extract_agri_weather_info(weather_data):
-    important_info = []
-    for entry in weather_data.get("list", []):
-        rain = entry.get("rain", {})
-        rain_mm = rain.get("1h") or rain.get("3h") or 0
-        
-        info = {
-            "datetime": entry.get("dt_txt"),
-            "rain_mm": rain_mm,
-            "pop": entry.get("pop", 0),
-            "temp": entry["main"].get("temp"),
-            "humidity": entry["main"].get("humidity"),
-            "wind_speed": entry["wind"].get("speed"),
-            "description": entry["weather"][0].get("description"),
-            "clouds": entry.get("clouds", {}).get("all", 0)
-        }
-
-        important_info.append(info)
-    return important_info
-
-
-def getResponseFromWeatherData(weather_data):
-    prompt = f"""You are an expert Agriculture Advisor for Indian farmers. 
-            Your task is to analyze the weather data and give practical, simple, actionable farm advisories in Marathi.
-
-            Weather Forecast Data:
-            {weather_data}
-
-            Goals:
-            - Use weather to recommend actions for the next 1–3 days
-            - Output must be easy to understand for rural farmers
-
-            Include advisories for:
-            1) **Irrigation**
-            2) **Spraying (Pesticide/Fungicide/Herbicide)**
-            3) **Fertilizer/Urea/Manure Application**
-            4) **Pest & Disease Risk**
-            5) **Heat Stress / Sunlight Advisory**
-            6) **Rainfall Safety Advisory**
-            7) **Wind Advisory (Spray drift, lodging risk)**
-            8) **General Crop Protection Tips**
-            9) **Short summary + clear DO and DON'T list**
-
-            Decision Rules:
-            - Rain > 0 mm or POP > 60% = Avoid spraying and fertilizer
-            - If next 2 days total rain > 5 mm = Avoid irrigation
-            - If rain < 2 mm & high temp = Recommend irrigation
-            - Humidity > 80% + warmth = Fungus/Pest alert
-            - Wind speed > 4 m/s = No spraying (drift danger)
-            - High temperature (>34°C) = Heat stress — advise irrigation & mulch
-            - Cloudy + humid = High disease risk
-
-            Output Format:
-            1) ✅ **Rain & Weather Summary**
-            2) 💧 **Irrigation Advice**
-            3) 🧴 **Spray Advice**
-            4) 🌾 **Fertilizer Advice**
-            5) 🐛 **Pest/Disease Alert**
-            6) ☀️ **Heat/Weather Protection**
-            7) 📌 **Farmer DOs & DON'Ts**
-            8) 🔊 **Very short farmer-friendly voice-style line**
-            (Example: "उद्या हलका पाऊस, फवारणी थांबवा, हलके सिंचन करा.")
-
-            Language:
-            - Marathi
-            - Short sentences
-            - Very practical, ground-level tone
-            - Avoid scientific jargon — use farmer-friendly words
-            """
-
-    response = gemini_response(prompt)
-    advisory = response.text.strip()
-    return advisory
 
 
 @app.route('/intel-weather-advisory', methods=['POST'])
@@ -1080,8 +809,7 @@ def getWeatherAdvisory():
     country = 'IN'
     weather_data = fetch_weather_data(city, country)
     weather_data_extracted = extract_agri_weather_info(weather_data)
-    advisory = getResponseFromWeatherData(weather_data_extracted)
-    print(advisory)
+    advisory = getActionableWeatherAdvisory(weather_data_extracted)
     return jsonify({'weatherAdvisory': advisory})
 
 @app.route('/intel-crop-image-analysis', methods=['POST'])
@@ -1106,12 +834,152 @@ def getCropImageAnalysis():
 def govSchemesSupport():
     data = request.get_json()
     farmer_profile = data.get('farmer_profile')
-    print(farmer_profile)
     language = data.get('language', 'Marathi')
-
     scheme_recommendations = farmer_scheme_recommendation(farmer_profile,language)
 
     return jsonify({'govSchemesSupport': scheme_recommendations})
+
+
+
+@app.route('/intel-fertilizer-advisory', methods=['POST'])
+def get_fertilizer_advisory():
+    """Generate NPK recommendation based on crop, soil, and location."""
+    try:
+        data = request.get_json()
+        
+        # Extract all required fields (with defaults to avoid KeyError)
+        crop_name = data.get('cropName', '')
+        season = data.get('season', '')
+        land_used = data.get('landUsed', 0)
+        soil = data.get('soil', {})
+        locality = data.get('locality', {})
+
+        # Call your advisory logic (replace with actual function)
+        fertilizer_advisory = getFertilizerAdvisory(
+            crop=crop_name,
+            season=season,
+            land_area=land_used,
+            soil_n=soil.get('nitrogen'),
+            soil_p=soil.get('phosphorus'),
+            soil_k=soil.get('potassium'),
+            soil_ph=soil.get('ph'),
+            soil_oc=soil.get('organicCarbon'),
+            soil_type=soil.get('soilType'),
+            state=locality.get('state'),
+            district=locality.get('district'),
+            village=locality.get('village')
+        )
+
+        return jsonify({'fertilizerAdvisory': fertilizer_advisory}), 200
+
+    except Exception as e:
+        print(f"Error in fertilizer advisory: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/intel-yield-prediction', methods=['POST'])
+def get_yield_prediction():
+    """Predict expected yield based on crop, soil, season, and location."""
+    try:
+        data = request.get_json()
+        
+        # Extract all relevant fields
+        crop_name = data.get('cropName', '')
+        season = data.get('season', '')
+        land_used = data.get('landUsed', 0)
+        soil = data.get('soil', {})
+        locality = data.get('locality', {})
+
+        # Call your yield prediction model/function
+        yield_prediction = getYieldPrediction(
+            crop=crop_name,
+            season=season,
+            land_area=land_used,
+            soil_n=soil.get('nitrogen'),
+            soil_p=soil.get('phosphorus'),
+            soil_k=soil.get('potassium'),
+            soil_ph=soil.get('ph'),
+            soil_oc=soil.get('organicCarbon'),
+            soil_type=soil.get('soilType'),
+            state=locality.get('state'),
+            district=locality.get('district'),
+            village=locality.get('village')
+        )
+
+        return jsonify({'yieldPrediction': yield_prediction}), 200
+
+    except Exception as e:
+        print(f"Error in yield prediction: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/intel-pest-management-advisory', methods=['POST'])
+def get_pest_management_advisory():
+    try:
+        data = request.get_json()
+        
+        # Extract all required fields (with defaults to avoid KeyError)
+        crop_name = data.get('cropName', '')
+        season = data.get('season', '')
+        land_used = data.get('landUsed', 0)
+        soil = data.get('soil', {})
+        locality = data.get('locality', {})
+
+        # Call your advisory logic (replace with actual function)
+        fertilizer_advisory = getPestManagementAdvisory(
+            crop=crop_name,
+            season=season,
+            land_area=land_used,
+            soil_n=soil.get('nitrogen'),
+            soil_p=soil.get('phosphorus'),
+            soil_k=soil.get('potassium'),
+            soil_ph=soil.get('ph'),
+            soil_oc=soil.get('organicCarbon'),
+            soil_type=soil.get('soilType'),
+            state=locality.get('state'),
+            district=locality.get('district'),
+            village=locality.get('village')
+        )
+
+        return jsonify({'pestManagementAdvisory': fertilizer_advisory}), 200
+
+    except Exception as e:
+        print(f"Error in pest management advisory: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/intel-crop-plan-manager', methods=['POST'])
+def get_crop_plan_manager():
+    try:
+        data = request.get_json()
+        
+        # Extract all required fields (with defaults to avoid KeyError)
+        crop_name = data.get('cropName', '')
+        season = data.get('season', '')
+        land_used = data.get('landUsed', 0)
+        soil = data.get('soil', {})
+        locality = data.get('locality', {})
+
+        # Call your advisory logic (replace with actual function)
+        crop_plan_manager = getCropPlanManager(
+            crop=crop_name,
+            season=season,
+            land_area=land_used,
+            soil_n=soil.get('nitrogen'),
+            soil_p=soil.get('phosphorus'),
+            soil_k=soil.get('potassium'),
+            soil_ph=soil.get('ph'),
+            soil_oc=soil.get('organicCarbon'),
+            soil_type=soil.get('soilType'),
+            state=locality.get('state'),
+            district=locality.get('district'),
+            village=locality.get('village')
+        )
+        return jsonify({'cropPlanManager': crop_plan_manager}), 200
+
+    except Exception as e:
+        print(f"Error in crop plan manager: {e}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

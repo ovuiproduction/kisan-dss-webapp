@@ -2,7 +2,12 @@ import axios from "axios";
 const API_BASE_URL = "https://kisan-dss-db.onrender.com";
 // const API_BASE_URL = "http://localhost:4000";
 
-// api.jsx
+
+// APIs for Database interactions (MongoDB) - CRUD operations and Logs
+
+
+// Farmer Profile APIs
+
 export const fetchActiveCrops_api = async (email) => {
   try {
     const response = await fetch(
@@ -215,7 +220,6 @@ export const postCrop_api = async (cropData) => {
   }
 };
 
-
 export const signup_farmer_api = async (userData, userType) => {
   try {
     const response = await fetch( 
@@ -235,6 +239,29 @@ export const signup_farmer_api = async (userData, userType) => {
   catch (error) {
     console.error("Error in signup:", error);
     throw error; // rethrow to handle it in the caller
+  }
+};
+
+export const update_farmer_profile_api = async (profileData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/farmer/update-profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profileData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Profile update failed");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
   }
 };
 
@@ -258,7 +285,6 @@ export const signup_user_api = async (userData, userType) => {
     throw error; // rethrow to handle it in the caller
   }
 };
-
 
 export const fetchTransactions_api = async (farmerId) => {
   try {
@@ -292,7 +318,6 @@ export const fetchAllCropUserDashboard_api = async (search) => {
   }
 };
 
-
 export const addToCart_api = async (userId, productId,quantity) => {
   try { 
     const response = await fetch(`${API_BASE_URL}/add-to-cart`, {     
@@ -310,7 +335,6 @@ export const addToCart_api = async (userId, productId,quantity) => {
     throw error; // rethrow to handle it in the caller
   }
 };
-
 
 export const fetchUserProfile_api = async (email) => {
   try {
@@ -350,6 +374,24 @@ export  const fetchUserTransactions_api = async (userId) => {
   }
 };
 
+export const get_farmer_profile_api = async () => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const email = user?.email;
+  if (!email) {
+    throw new Error("User email not found in session");
+  }
+  const response = await fetch(`${API_BASE_URL}/farmer-profile?email=${encodeURIComponent(email)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Failed to fetch profile");
+  return data;
+};
+
+
+// Weather Advisory APIs
+
 
 export const updateWeatherAdvisory = async (advisoryText,expiryDate) => {
   try {
@@ -383,6 +425,167 @@ export const getWeatherAdvisory = async () => {
 
   } catch (error) {
     console.error("Error in fetching weather advisory:", error);
+    throw error;
+  }
+};
+
+
+
+// Instance APIs
+
+
+// Create new instance
+export const create_instance_api = async (instanceData) => {
+  const response = await fetch(`${API_BASE_URL}/instance/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(instanceData),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Instance creation failed");
+  return data;
+};
+
+// Get all instances for a farmer (by email)
+export const get_instances_api = async (email) => {
+  const response = await fetch(`${API_BASE_URL}/instance?email=${encodeURIComponent(email)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Failed to fetch instances");
+  return data;
+};
+
+// Get single instance by ID 
+export const get_instance_by_id_api = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/instance/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Failed to fetch instance");
+  return data;
+};
+
+// Update instance - complete stage, update crop name, add initial plan
+export const complete_stage_api = async (instanceId, stageName) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/instance/complete-stage/${instanceId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ stage: stageName }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to complete stage");
+    }
+
+    return data; // returns updated instance
+  } catch (error) {
+    console.error("Error completing stage:", error);
+    throw error;
+  }
+};
+
+// update crop name
+export const update_crop_name_api = async (instanceId, cropName) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/instance/update-crop-name/${instanceId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cropName }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update crop name");
+    }
+
+    return data; // returns updated instance
+  } catch (error) {
+    console.error("Error updating crop name:", error);
+    throw error;
+  }
+};
+
+// add initial plan
+export const add_initial_plan_api = async (instanceId, initialPlan) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/instance/add-initial-plan/${instanceId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ initialPlan }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to add initial plan");
+    }
+
+    return data; // returns updated instance
+  } catch (error) {
+    console.error("Error completing stage:", error);
+    throw error;
+  }
+};
+
+
+// Logs APIs
+
+
+export const insert_logs_api = async (logData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/logs/insert`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(logData),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Failed to insert logs');
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('Error inserting logs:', error);
+    throw error;
+  }
+};
+
+export const fetch_logs_api = async (farmerId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/logs/get/${farmerId}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch logs');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching logs:', error);
     throw error;
   }
 };

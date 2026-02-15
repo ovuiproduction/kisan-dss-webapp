@@ -14,6 +14,7 @@ import GovSupport from "./GovSupport";
 import ChatBot from "./ChatBot";
 import { intelDecisionBuilding_api, IntelWeatherAdvisory_api } from "./apis_ml";
 import { getWeatherAdvisory, updateWeatherAdvisory } from "./apis_db";
+import InstanceDashboard from "./InstanceDashboard";
 
 export default function FarmerDashBoard() {
   const navigate = useNavigate();
@@ -97,8 +98,8 @@ export default function FarmerDashBoard() {
       title: "Government Schemes",
       description:
         "Bridging Farmers with Government Support! Discover and apply for beneficial government schemes.",
-      link: "/intel-goverment-scheme",
-      type: "link",
+      action: () => setGovSupport(true),
+      type: "button",
     },
     {
       icon: "🧑‍🌾",
@@ -107,6 +108,14 @@ export default function FarmerDashBoard() {
         "Learn modern farming techniques and best practices for optimal crop yield and sustainable farming.",
       link: "/intel-cultivation-guide",
       type: "link",
+    },
+    {
+      icon: "🩺",
+      title: "Crop Disease Diagnosis & Treatment",
+      description:
+        "Diagnose crop diseases and get treatment recommendations using AI.",
+      action: handleCropImageAnalysis,
+      type: "button",
     },
     {
       icon: "🏛️",
@@ -231,7 +240,8 @@ export default function FarmerDashBoard() {
       <div id="cover_root">
         <div className="cover_container">
           <h1 className="cover_heading">🌾 Agricultural Services Gateway</h1>
-
+          <h2>Welcome, {user.name}!</h2>
+          
           <main>
             {weatherAdvisory && (
               <div className="weather-advisory-section">
@@ -244,7 +254,7 @@ export default function FarmerDashBoard() {
                     className="scroll-header"
                     onClick={() => setIsScrollOpen(!isScrollOpen)}
                   >
-                    <h2>🌤️ Weather Advisory & Guidance</h2>
+                    <h2>🌤️ Daily Weather Advisory & Guidance</h2>
                     <button
                       className="scroll-toggle"
                       aria-label="Toggle weather advisory"
@@ -276,6 +286,12 @@ export default function FarmerDashBoard() {
               </div>
             )}
           </main>
+
+            <main>
+          <div className="instance-main-dashboard">
+          <InstanceDashboard/>
+          </div>
+         </main>
 
           <main className="farmer-dashboard-smart-container">
             {loading && (
@@ -467,7 +483,7 @@ export default function FarmerDashBoard() {
 
         {govSupport && <GovSupport onClose={() => setGovSupport(false)} />}
 
-        <div className="left-side-block">
+        {/* <div className="left-side-block">
           <button
             onClick={handleCropImageAnalysis}
             className="leftbar-btn"
@@ -484,7 +500,7 @@ export default function FarmerDashBoard() {
           >
             <i  className="fa-solid fa-landmark"></i>
           </button>
-        </div>
+        </div> */}
 
         <div className="farmer-bot-block">
           <button title="KD-ChatBot" onClick={handleChatBot} className="farmer-bot-btn">

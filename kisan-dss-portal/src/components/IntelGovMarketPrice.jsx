@@ -25,7 +25,20 @@ export default function IntelGovMarketPrice() {
   const { state } = location;
   console.log(state);
 
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const labels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const commodityImages = {
     Bajra,
@@ -77,9 +90,13 @@ export default function IntelGovMarketPrice() {
       <div id="Priceresult_root">
         <nav className="Priceresult_glass-nav">
           <div className="Priceresult_nav-content">
-            <a href="/farmer-dashboard" className="Priceresult_logo">APMC Market Guide</a>
+            <a href="/farmer-dashboard" className="Priceresult_logo">
+              APMC Market Guide
+            </a>
             <div className="Priceresult_nav-links">
-              <a href="/farmer-dashboard" className="Priceresult_nav-link"><i className="fas fa-home"></i> Home</a>
+              <a href="/farmer-dashboard" className="Priceresult_nav-link">
+                <i className="fas fa-home"></i> Home
+              </a>
             </div>
           </div>
         </nav>
@@ -88,24 +105,39 @@ export default function IntelGovMarketPrice() {
           <div className="Priceresult_header-section">
             <div className="Priceresult_date-card">
               <i className="fas fa-calendar-alt"></i>
-              <span>{state.month} / {state.year}</span>
+              <span>
+                {state.month} / {state.year}
+              </span>
             </div>
-            <h1 className="Priceresult_main-title">APMC Market Price Analysis</h1>
+            <h1 className="Priceresult_main-title">
+              APMC Market Price Analysis
+            </h1>
           </div>
 
           <div className="Priceresult_dashboard-grid">
             <div className="Priceresult_commodity-card Priceresult_glass-card">
               <div className="Priceresult_crop-hero">
-                <img src={commodityImages[state.commodity]} alt="Crop" className="Priceresult_crop-image" />
+                <img
+                  src={commodityImages[state.commodity]}
+                  alt="Crop"
+                  className="Priceresult_crop-image"
+                />
                 <div className="Priceresult_crop-overlay">
                   <h3>{state.commodity}</h3>
                 </div>
               </div>
               <div className="Priceresult_stats-grid">
+                <div className="Priceresult_stat-card danger">
+                  <i className="fas fa-arrow-down"></i>
+                  <div className="Priceresult_stat-content">
+                    <h4>Min Price</h4>
+                    <p>{state.minPrice} ₹/quintal</p>
+                  </div>
+                </div>
                 <div className="Priceresult_stat-card primary">
                   <i className="fas fa-coins"></i>
                   <div className="Priceresult_stat-content">
-                    <h4>Avg Price</h4>
+                    <h4>Avg. Price</h4>
                     <p>{state.avgPrice} ₹/quintal</p>
                   </div>
                 </div>
@@ -114,13 +146,6 @@ export default function IntelGovMarketPrice() {
                   <div className="Priceresult_stat-content">
                     <h4>Max Price</h4>
                     <p>{state.maxPrice} ₹/quintal</p>
-                  </div>
-                </div>
-                <div className="Priceresult_stat-card danger">
-                  <i className="fas fa-arrow-down"></i>
-                  <div className="Priceresult_stat-content">
-                    <h4>Min Price</h4>
-                    <p>{state.minPrice} ₹/quintal</p>
                   </div>
                 </div>
               </div>
@@ -136,14 +161,30 @@ export default function IntelGovMarketPrice() {
                   <div className="Priceresult_weather-item best">
                     <p className="blink-dot sucess-dot"></p>
                     <h4>📈 Optimal Selling Months</h4>
-                    <p className="value">Maximize profit by selling during peak price months.</p>
-                    <p className="month">{state.goldMonthIndex} - {new Date(0, state.goldMonthIndex - 1).toLocaleString('en-US', { month: 'long' })}</p>
+                    <p className="value">
+                      Maximize profit by selling during peak price months.
+                    </p>
+                    <p className="month">
+                      {/* {state.goldMonthIndex} -{" "} */}
+                      {new Date(0, state.goldMonthIndex - 1).toLocaleString(
+                        "en-US",
+                        { month: "long" },
+                      )}
+                    </p>
                   </div>
                   <div className="Priceresult_weather-item worst">
-                  <p className="blink-dot danger-dot"></p>
+                    <p className="blink-dot danger-dot"></p>
                     <h4>⚠️ Risk Period</h4>
-                    <p className="value">Minimize losses by avoiding sales in low-price months.</p>
-                    <p className="month">{state.silverMonthIndex} - {new Date(0, state.silverMonthIndex - 1).toLocaleString('en-US', { month: 'long' })}</p>
+                    <p className="value">
+                      Minimize losses by avoiding sales in low-price months.
+                    </p>
+                    <p className="month">
+                      {/* {state.silverMonthIndex} -{" "} */}
+                      {new Date(0, state.silverMonthIndex - 1).toLocaleString(
+                        "en-US",
+                        { month: "long" },
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -158,22 +199,29 @@ export default function IntelGovMarketPrice() {
               </div>
               <div className="Priceresult_extremes-body">
                 <div className="Priceresult_extremes-item">
-                  <div className="Priceresult_extremes-label">Optimal Month</div>
-                  <div className="Priceresult_extremes-value">{state.goldMonthIndex}</div>
+                  <div className="Priceresult_extremes-label">
+                    Optimal Month
+                  </div>
+                  <div className="Priceresult_extremes-value">
+                     {new Date(0, state.goldMonthIndex - 1).toLocaleString(
+                        "en-US",
+                        { month: "long" },
+                      )}
+                  </div>
                 </div>
                 <div className="Priceresult_price-range">
                   <div className="Priceresult_range-item">
                     <span>
-                    <span>Price Range : </span>
-                    <span>{state.minMSPPrice} ₹/quintal</span>
-                    <span>-</span>
-                    <span>{state.maxMSPPrice} ₹/quintal</span>
+                      <span>Price Range : </span>
+                      <span>{state.minMSPPrice} ₹/quintal</span>
+                      <span>-</span>
+                      <span>{state.maxMSPPrice} ₹/quintal</span>
                     </span>
                   </div>
                 </div>
                 <div className="Priceresult_extremes-weather">
                   <i className="fas fa-cloud-rain"></i>
-                  Expected Rainfall India :  {state.rainfall} mm
+                  Expected Rainfall India : {state.rainfall} mm
                 </div>
               </div>
             </div>
@@ -186,15 +234,20 @@ export default function IntelGovMarketPrice() {
               <div className="Priceresult_extremes-body">
                 <div className="Priceresult_extremes-item">
                   <div className="Priceresult_extremes-label">Risk Month</div>
-                  <div className="Priceresult_extremes-value">{state.silverMonthIndex}</div>
+                  <div className="Priceresult_extremes-value">
+                    {new Date(0, state.silverMonthIndex - 1).toLocaleString(
+                        "en-US",
+                        { month: "long" },
+                      )}
+                  </div>
                 </div>
                 <div className="Priceresult_price-range">
                   <div className="Priceresult_range-item">
-                  <span>
-                    <span>Price Range : </span>
-                    <span>{state.minAvgPrice} ₹/quintal</span>
-                    <span>-</span>
-                    <span>{state.maxAvgPrice} ₹/quintal</span>
+                    <span>
+                      <span>Price Range : </span>
+                      <span>{state.minAvgPrice} ₹/quintal</span>
+                      <span>-</span>
+                      <span>{state.maxAvgPrice} ₹/quintal</span>
                     </span>
                   </div>
                 </div>
@@ -206,29 +259,53 @@ export default function IntelGovMarketPrice() {
             </div>
           </div>
 
-
           <div className="Priceresult_visualization-section">
             <div className="Priceresult_graph-card Priceresult_glass-card">
               <div className="Priceresult_graph-header">
-                <h3><i className="fas fa-chart-line"></i> {state.year} Price Trend</h3>
+                <h3>
+                  <i className="fas fa-chart-line"></i> {state.year} Price Trend
+                </h3>
                 <div className="Priceresult_graph-legend">
-                  <span className="Priceresult_legend-item"><div className="Priceresult_color-box current"></div> Current Year</span>
+                  <span className="Priceresult_legend-item">
+                    <div className="Priceresult_color-box current"></div>{" "}
+                    Current Year
+                  </span>
                 </div>
               </div>
               <div className="Priceresult_graph-container">
-                <Line data={chartData(labels, state.maxPriceCurrSeries, state.minPriceCurrSeries)} options={options} />
+                <Line
+                  data={chartData(
+                    labels,
+                    state.maxPriceCurrSeries,
+                    state.minPriceCurrSeries,
+                  )}
+                  options={options}
+                />
               </div>
             </div>
 
             <div className="Priceresult_graph-card Priceresult_glass-card">
               <div className="Priceresult_graph-header">
-                <h3><i className="fas fa-chart-line"></i> {state.year + 1} Forecast</h3>
+                <h3>
+                  <i className="fas fa-chart-line"></i> {state.year + 1}{" "}
+                  Forecast
+                </h3>
                 <div className="Priceresult_graph-legend">
-                  <span className="Priceresult_legend-item"><div className="Priceresult_color-box forecast"></div> Next Year</span>
+                  <span className="Priceresult_legend-item">
+                    <div className="Priceresult_color-box forecast"></div> Next
+                    Year
+                  </span>
                 </div>
               </div>
               <div className="Priceresult_graph-container">
-                <Line data={chartData(labels, state.maxPriceNextSeries, state.minPriceNextSeries)} options={options} />
+                <Line
+                  data={chartData(
+                    labels,
+                    state.maxPriceNextSeries,
+                    state.minPriceNextSeries,
+                  )}
+                  options={options}
+                />
               </div>
             </div>
           </div>
