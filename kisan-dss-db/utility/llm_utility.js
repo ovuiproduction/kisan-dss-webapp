@@ -13,7 +13,7 @@ async function runChat(userInput) {
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       generationConfig: {
         temperature: 0.9,
         topK: 1,

@@ -171,7 +171,7 @@
   font-weight: 500;
 }
 
-/* ----- Advisory Result Box (Dark Green Console Style) ----- */
+
 .fertilizer-advisory-result {
   background: #f9fff9;
   border: 1px solid #c8e6c9;
@@ -189,19 +189,21 @@
   gap: 0.5rem;
 }
 
+
+
 .advisory-content {
-  background: #1e3a2f;
-  color: #f1f8e9;
-  padding: 1.2rem 1.4rem;
-  border-radius: 14px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #2e7d32;
+background: #f4f9f0;
+color: #1e3a2f;
+padding: 1.2rem 1.4rem;
+border-radius: 14px;
+font-family: 'Courier New', Courier, monospace;
+font-size: 0.9rem;
+line-height: 1.6;
+white-space: pre-wrap;
+word-break: break-word;
+max-height: 300px;
+overflow-y: auto;
+border: 1px solid #2e7d32;
 }
 
 .advisory-content p {

@@ -122,37 +122,7 @@ export default function IntelCultivationPractices() {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Videos Section */}
-          {data.recommended_youtube_videos &&
-            data.recommended_youtube_videos.length > 0 && (
-              <div className="videos-section">
-                <h4 className="section-title">
-                  <span className="video-icon">🎥</span>
-                  Recommended Video Resources
-                </h4>
-                <div className="videos-grid">
-                  {data.recommended_youtube_videos.map((v, idx) => (
-                    <a
-                      key={idx}
-                      href={v.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="video-card"
-                    >
-                      <div className="video-thumbnail">
-                        <span className="play-icon">▶</span>
-                      </div>
-                      <div className="video-info">
-                        <h5 className="video-title">{v.title}</h5>
-                        <p className="video-channel">{v.channel}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
+          </div>          
         </div>
       )}
 
