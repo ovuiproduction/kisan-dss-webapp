@@ -1,6 +1,6 @@
 import axios from "axios";
-const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
-// const API_BASE_URL = "http://localhost:7860";
+// const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
+const API_BASE_URL = "http://localhost:7860";
 
 import { insert_logs_api } from './apis_db';
 
@@ -24,11 +24,11 @@ export const intelDecisionBuilding_api = async (formData) => {
       }
     );
     const data = response.data;
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'intel-build-decision', input: JSON.stringify(formData) }),
-      response: JSON.stringify(data.decision),
-    });
+    // await insert_logs_api({
+    //   farmerId: loggedInFarmerId,
+    //   query: JSON.stringify({ service: 'intel-build-decision', input: JSON.stringify(formData) }),
+    //   response: JSON.stringify(data.decision),
+    // });
     return data;
   } catch (error) {
     console.error("Error in intelDecisionBuilding:", error);
