@@ -1,6 +1,6 @@
 import axios from "axios";
-// const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
-const API_BASE_URL = "http://localhost:7860";
+const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
+// const API_BASE_URL = "http://localhost:7860";
 
 import { insert_logs_api } from './apis_db';
 
