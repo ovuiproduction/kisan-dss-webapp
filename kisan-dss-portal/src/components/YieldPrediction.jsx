@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IntelYieldPrediction } from "./apis_ml"; // adjust import path
 import "../css/YieldPrediction.css";
+import ReactMarkdown from "react-markdown";
 
 const YieldPrediction = ({ selectedInstance, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -106,11 +107,9 @@ const YieldPrediction = ({ selectedInstance, onClose }) => {
             <div className="yield-prediction-result">
               <h3>📋 Yield Estimate</h3>
               <div className="prediction-content">
-                {typeof prediction === "string" ? (
-                  <p>{prediction}</p>
-                ) : (
-                  <pre>{JSON.stringify(prediction, null, 2)}</pre>
-                )}
+                  <ReactMarkdown>
+                  {prediction}
+                  </ReactMarkdown>
               </div>
             </div>
           )}

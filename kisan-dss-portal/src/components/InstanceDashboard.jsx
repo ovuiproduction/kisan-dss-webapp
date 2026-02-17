@@ -75,14 +75,6 @@ const InstanceDashboard = () => {
         action: () => setIntelCropRecommendationForm(true),
         type: "button",
       },
-      {
-        icon: "🧑‍🌾",
-        title: "Cultivation Guide",
-        description:
-          "Learn modern farming techniques and best practices for optimal crop yield and sustainable farming.",
-        link: "/intel-cultivation-guide",
-        type: "link",
-      },
     ],
     Cultivation: [
       {
