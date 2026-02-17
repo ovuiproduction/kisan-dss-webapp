@@ -1,6 +1,6 @@
 import axios from "axios";
-const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
-// const API_BASE_URL = "http://localhost:7860";
+// const API_BASE_URL = "https://onkar-waghmode-kisan-dss.hf.space";
+const API_BASE_URL = "http://localhost:7860";
 
 import { insert_logs_api } from './apis_db';
 
@@ -8,7 +8,15 @@ const loggedInFarmerId = JSON.parse(localStorage.getItem("user"))?._id || null;
 
 
 // AI and Machine Learning-based Functions for Kisan DSS Portal
-
+const insert_logs = async (farmerId, query, response, service) => {
+  if (farmerId && query && response && service) {
+    await insert_logs_api({
+      farmerId: farmerId,
+      query: JSON.stringify({ service: service, input: JSON.stringify(query) }),
+      response: JSON.stringify(response),
+    });
+  }
+};
 
 // AI and Machine Learning-based Decision Building
 export const intelDecisionBuilding_api = async (formData) => {
@@ -24,11 +32,11 @@ export const intelDecisionBuilding_api = async (formData) => {
       }
     );
     const data = response.data;
-    // await insert_logs_api({
-    //   farmerId: loggedInFarmerId,
-    //   query: JSON.stringify({ service: 'intel-build-decision', input: JSON.stringify(formData) }),
-    //   response: JSON.stringify(data.decision),
-    // });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Smart Decision Building"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in intelDecisionBuilding:", error);
@@ -50,11 +58,11 @@ export const cropRecommendation_api = async (formData) => {
       }
     );  
     const data = response.data;
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'crop-recommendation', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data.conclusion),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Crop Recommedation"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in cropRecommendation:", error);
@@ -76,6 +84,11 @@ export const intelWPIPrice_api = async (formData) => {
       }
     );
     const data = response.data;
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel WPI Price"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in intelWPIPrice:", error);
@@ -96,7 +109,11 @@ export const IntelCultivation_api = async (formData) => {
         },
       }
     );
-
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Cultivation Guide"
+    insert_logs(farmerId,query,response_data,service)
     return response.data; 
   } catch (error) {
     console.error("Error in IntelCultivation_api:", error);
@@ -117,11 +134,11 @@ export const IntelWeatherAdvisory_api = async (formData) => {
         },
       }
     );
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'weather-advisory', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data.weatherAdvisory),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response)
+    let service = "Smart Decision Building"
+    insert_logs(farmerId,query,response_data,service)
     return response.data;
   } catch (error) {
     console.error("Error in IntelWeatherAdvisory_api:", error);
@@ -143,11 +160,11 @@ export const intelMarketPrice_api = async (formData) => {
       }
     );
     const data = response.data;
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'market-price-prediction', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data.conclusion),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Smart Decision Building"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in intelMarketPrice:", error);
@@ -169,11 +186,11 @@ export const intelCropImageAnalysis = async (formData) => {
       }
     );
     const data = response.data;
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'crop-image-analysis', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Crop Image Analysis"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in intelCropImageAnalysis:", error);
@@ -196,11 +213,11 @@ export const IntelGovSchemeSupport = async (formData) => {
     );
     
     const data = response.data;
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'gov-scheme-support', input: JSON.stringify(formData) }),
-      response: JSON.stringify(data),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Goverment Scheme Support"
+    insert_logs(farmerId,query,response_data,service)
     return data;
   } catch (error) {
     console.error("Error in intelGovSchemeSupport:", error);
@@ -221,11 +238,11 @@ export const IntelFertilizerAdvisory = async (formData) => {
         },
       }
     );
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'fertilizer-advisory', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Fertilizer Advisory"
+    insert_logs(farmerId,query,response_data,service)
     return response.data;
   } catch (error) {
     console.error("Error in IntelFertilizerAdvisory:", error);
@@ -246,11 +263,11 @@ export const IntelYieldPrediction = async (formData) => {
         },
       }
     );
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'yield-prediction', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Yield Prediction"
+    insert_logs(farmerId,query,response_data,service)
     return response.data; // returns { weatherAdvisory: ... }
   } catch (error) {
     console.error("Error in IntelYieldPrediction:", error);
@@ -271,7 +288,11 @@ export const IntelPestManagementAdvisory = async (formData) => {
         },
       }
     );
-
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Pest Management"
+    insert_logs(farmerId,query,response_data,service)
     return response.data;
   } catch (error) {
     console.error("Error in IntelPestManagementAdvisory:", error);
@@ -292,11 +313,11 @@ export const IntelCropPlanManager = async (formData) => {
         },
       }
     );
-    await insert_logs_api({
-      farmerId: loggedInFarmerId,
-      query: JSON.stringify({ service: 'crop-plan-manager', input: JSON.stringify(formData) }),
-      response: JSON.stringify(response.data),
-    });
+    let farmerId = loggedInFarmerId;
+    let query = JSON.stringify(formData);
+    let response_data = JSON.stringify(response.data)
+    let service = "Intel Crop Planing"
+    insert_logs(farmerId,query,response_data,service)
     return response.data; 
   } catch (error) {
     console.error("Error in IntelCropPlanManager:", error);

@@ -1,153 +1,244 @@
-/* intel-crop-rec-result.css */
+/* intel-crop-rec-result.css - Professional Modern Look (with light green table rows) */
+
 .intel-yield-result-root {
-    background: linear-gradient(135deg, #f0f7da 0%, #d8edd3 100%);
-    min-height: 100vh;
-    padding: 2rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(145deg, #f4fbf0 0%, #deedd9 100%);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Navigation */
 .intel-yield-result-nav {
-    background-color: #2d5a27;
-    padding: 1rem 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+  background-color: #1e3b1a;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 40, 0, 0.15);
+  margin-bottom: 2rem;
+  display: inline-block;
 }
 
 .intel-yield-result-nav a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
 }
 
 .intel-yield-result-nav a:hover {
-    color: #e0f0d9;
+  color: #c8e6c9;
+  transform: translateY(-1px);
 }
 
+/* Section Headers */
 .section-header {
-    text-align: center;
-    margin: 2rem 0;
-    padding: 1rem;
-    background: rgba(255,255,255,0.9);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  margin: 2.5rem 0 1.5rem;
+  padding: 0.5rem 1rem;
+  position: relative;
 }
 
 .section-header h2 {
-    color: #2d5a27;
-    font-size: 2rem;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  color: #1e3b1a;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem 2rem;
+  border-radius: 40px;
+  box-shadow: 0 4px 15px rgba(0, 30, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
+/* Commodity container (cards) */
 .commodity-container {
-    background: rgba(255,255,255,0.9);
-    border-radius: 15px;
-    padding: 2rem;
-    margin: 2rem 0;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 20px 35px -8px rgba(0, 40, 0, 0.2), 0 0 0 1px rgba(75, 140, 60, 0.1) inset;
+  backdrop-filter: blur(2px);
+  transition: box-shadow 0.3s ease;
 }
 
+.commodity-container:hover {
+  box-shadow: 0 25px 45px -10px rgba(0, 60, 0, 0.25), 0 0 0 1px rgba(75, 140, 60, 0.2) inset;
+}
+
+/* Table styling */
 .crop-selection-main-block {
-    overflow-x: auto;
-    margin: 2rem 0;
+  overflow-x: auto;
+  margin: 0 0 1.5rem 0;
+  border-radius: 18px;
+  background: #fafefa;
+  padding: 0.25rem;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 1px 12px rgba(0,0,0,0.08);
-}
-
-th, td {
-    padding: 1.2rem;
-    text-align: center;
-    border-bottom: 1px solid #e0e0e0;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  background: transparent;
+  font-size: 0.95rem;
 }
 
 th {
-    background-color: #4a8c3a;
-    color: white;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  background-color: #2d5a27;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 0.85rem;
+  padding: 1rem 1.2rem;
+  border: none;
+  white-space: nowrap;
 }
 
-tr:hover {
-    background-color: #f5faf4;
-    transition: background-color 0.3s ease;
+
+td {
+  padding: 1rem 1.2rem;
+  border: none;
+  color: #1e2f1a;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 20, 0, 0.02);
 }
 
-tr:last-child td {
-    border-bottom: none;
-}
 
+/* Conclusion section */
 .conclusion {
-    margin-top: 2rem;
-    padding: 2rem;
-    background: #e8f5e9;
-    border-left: 5px solid #4a8c3a;
-    border-radius: 8px;
-    animation: fadeIn 0.8s ease;
+  margin-top: 2rem;
+  padding: 1.8rem 2rem;
+  background: linear-gradient(105deg, #e8f5e9 0%, #d4e8d0 100%);
+  border-left: 8px solid #2d5a27;
+  border-radius: 20px;
+  box-shadow: 0 8px 18px rgba(0, 30, 0, 0.12);
+  position: relative;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.conclusion::before {
+  content: "🌱";
+  font-size: 2.2rem;
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  opacity: 0.15;
+  transform: rotate(5deg);
 }
 
 .conclusion h3 {
-    color: #2d5a27;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+  color: #1e3b1a;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.conclusion h3::before {
+  content: "★";
+  color: #f5b342;
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .conclusion p {
-    color: #4a8c3a;
-    line-height: 1.6;
-    font-size: 1.1rem;
+  color: #2a4d24;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  margin: 0;
+  max-width: 85%;
+  font-weight: 400;
 }
 
+/* Chart container */
+.commodity-container > div[style*="height"] {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 1.5rem 1rem 1rem 1rem;
+  box-shadow: 0 5px 18px rgba(0, 20, 0, 0.05), 0 0 0 1px rgba(0, 30, 0, 0.05);
+  margin-top: 1rem;
+}
+
+/* Footer */
 .intel-yield-result-footer {
-    text-align: center;
-    padding: 1.5rem;
-    background-color: #2d5a27;
-    color: white;
-    border-radius: 12px;
-    margin-top: 2rem;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 1.2rem 2rem;
+  background: linear-gradient(135deg, #1e3b1a, #2d5a27);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 60px;
+  margin-top: 3rem;
+  box-shadow: 0 12px 25px -8px rgba(0, 30, 0, 0.5);
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Chart Styling */
-.commodity-container .chart-container {
-    padding: 2rem;
-    background: white;
-    border-radius: 12px;
-    margin-top: 2rem;
+.intel-yield-result-footer p {
+  margin: 0;
 }
 
 /* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-    th, td {
-        padding: 0.8rem;
-        font-size: 0.9rem;
-    }
-    
-    .section-header h2 {
-        font-size: 1.5rem;
-    }
-    
-    .conclusion {
-        padding: 1rem;
-    }
-    
-    .conclusion h3 {
-        font-size: 1.2rem;
-    }
+  .intel-yield-result-root {
+    padding: 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+    padding: 0.4rem 1.5rem;
+  }
+
+  .commodity-container {
+    padding: 1.2rem;
+  }
+
+  th, td {
+    padding: 0.8rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .conclusion {
+    padding: 1.2rem;
+  }
+
+  .conclusion h3 {
+    font-size: 1.4rem;
+  }
+
+  .conclusion p {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  .conclusion::before {
+    font-size: 1.8rem;
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .intel-yield-result-nav {
+    padding: 0.5rem 1.5rem;
+  }
 }

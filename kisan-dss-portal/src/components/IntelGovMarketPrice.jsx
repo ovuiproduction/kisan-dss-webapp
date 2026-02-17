@@ -23,8 +23,7 @@ import Wheat from "../static/CropImages/Wheat.jpg";
 export default function IntelGovMarketPrice() {
   const location = useLocation();
   const { state } = location;
-  console.log(state);
-
+  
   const labels = [
     "Jan",
     "Feb",
@@ -219,10 +218,10 @@ export default function IntelGovMarketPrice() {
                     </span>
                   </div>
                 </div>
-                <div className="Priceresult_extremes-weather">
+                {/* <div className="Priceresult_extremes-weather">
                   <i className="fas fa-cloud-rain"></i>
                   Expected Rainfall India : {state.rainfall} mm
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -251,10 +250,10 @@ export default function IntelGovMarketPrice() {
                     </span>
                   </div>
                 </div>
-                <div className="Priceresult_extremes-weather">
+                {/* <div className="Priceresult_extremes-weather">
                   <i className="fas fa-cloud-rain"></i>
                   Expected Rainfall India : {state.rainfall} mm
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

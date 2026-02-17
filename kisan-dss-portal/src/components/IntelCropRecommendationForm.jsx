@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../static/css/intel-crop-rec.css";
 import { cropRecommendation_api } from "./apis_ml";

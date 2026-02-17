@@ -34,7 +34,7 @@ const InstanceDashboard = () => {
   const [yieldPrediction, setYieldPrediction] = useState(false);
 
   const [guidedPath, setGuidedPath] = useState(true);
-  const [instanceDetails, setInstanceDetails] = useState(true);
+  const [instanceDetails, setInstanceDetails] = useState(false);
   const [logsDashboard, setLogsDashboard] = useState(false);
 
   const [govMarketForm, setGovMarketForm] = useState(false);

@@ -29,22 +29,30 @@ ChartJS.register(
 export default function IntelCropRecResult() {
   const location = useLocation();
   const { state } = location;
-
-  console.log("Received state:", state);
-
+  
   // Extract data for the chart
   const commodities = state?.data ? Object.keys(state.data) : [];
   const totalPrices = state?.data
     ? Object.values(state.data).map((item) => item.totalPrice)
     : [];
 
+  const expenditures = state?.expenditureData || [];
+
+  const profitArray = totalPrices.map((price, i) => {
+  const exp = expenditures[i].cost || 0;
+  return (price - exp).toFixed(2);
+  });
+
+
+
+
   // Chart.js Data
   const chartData = {
     labels: commodities, // X-axis (Commodity names)
     datasets: [
       {
-        label: "Expected Total Price",
-        data: totalPrices, // Y-axis (Total Price)
+        label: "Expected profit",
+        data: profitArray,
         borderColor: "blue",
         backgroundColor: "rgba(0, 0, 255, 0.2)",
         borderWidth: 2,
@@ -148,7 +156,7 @@ export default function IntelCropRecResult() {
       </div>
 
       <div className="section-header">
-        <h2>Expected Total Price for Each Crop</h2>
+        <h2>Crop Profitibility Analysis</h2>
       </div>
       {/* Chart Section */}
       <div className="commodity-container">
